@@ -90,13 +90,7 @@ class ErrorMiddleware implements MiddlewareInterface {
             };
         }
 
-        if (
-            typeof e === 'boolean' ||
-            typeof e === 'number' ||
-            typeof e === 'string' ||
-            typeof e === 'symbol' ||
-            typeof e === 'function'
-        ) {
+        if (typeof e === 'string' || typeof e === 'symbol' || typeof e === 'function') {
             return {
                 name: typeof e,
                 message: e.toString(),
@@ -110,13 +104,13 @@ class ErrorMiddleware implements MiddlewareInterface {
     }
 
     private addDebugToBody(error: Error): string {
-        return (
-            '<h2>Details</h2><div class block>' +
-            `<div><div class="key"><strong>name</strong></div><div class="value">${error.name}</div></div>` +
-            `<div><div class="key"><strong>message</strong></div><div class="value">${error.message}</div></div>` +
-            `<div><div class="key"><strong>stack</strong></div><div class="value">${error.stack ?? ''}</div></div>` +
-            '</div>'
-        );
+        return `
+            <h2>Details</h2>
+            <div class"block">
+                <div><div class="key"><strong>name</strong></div><div class="value">${error.name}</div></div>
+                <div><div class="key"><strong>message</strong></div><div class="value">${error.message}</div></div>
+                <div><div class="key"><strong>stack</strong></div><div class="value">${error.stack ?? ''}</div></div>
+            </div>`;
     }
 }
 

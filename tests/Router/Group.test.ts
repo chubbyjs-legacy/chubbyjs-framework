@@ -24,6 +24,8 @@ describe('Group', () => {
                 ]),
             ]);
 
+            expect(group._groupInterface).toBe('Group');
+
             const routes = group.getRoutes();
 
             expect(routes.length).toBe(3);
@@ -84,6 +86,8 @@ describe('Group', () => {
                 [middleware2],
                 new Map([['option2', 'value2']]),
             );
+
+            expect(group._groupInterface).toBe('Group');
 
             const routes = group.getRoutes();
 

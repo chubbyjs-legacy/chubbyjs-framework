@@ -9,6 +9,7 @@ describe('GroupInterface', () => {
             { name: 'object', value: {}, toBe: false },
             { name: 'string', value: 'example', toBe: false },
             { name: 'undefined', value: undefined, toBe: false },
+            { name: 'null', value: null, toBe: false },
         ].forEach(({ name, value, toBe }) => {
             test('group is ' + name, () => {
                 expect(isGroup(value)).toBe(toBe);

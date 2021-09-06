@@ -23,6 +23,8 @@ describe('Route', () => {
             expect(route.getMiddlewares()).toEqual([]);
             expect(route.getPathOptions()).toEqual(new Map());
             expect(route.getAttributes()).toEqual(new Map());
+
+            expect(route._routeInterface).toBe('Route');
         });
 
         test('without defaults', () => {
@@ -45,6 +47,8 @@ describe('Route', () => {
             expect(route.getPathOptions()).toEqual(new Map([['option', 'value']]));
             expect(route.getAttributes()).toEqual(new Map());
 
+            expect(route._routeInterface).toBe('Route');
+
             const routeWithAttributes = route.withAttributes(new Map([['attribute', 'value']]));
 
             expect(route).not.toBe(routeWithAttributes);
@@ -56,6 +60,8 @@ describe('Route', () => {
             expect(routeWithAttributes.getMiddlewares()).toEqual([middleware]);
             expect(routeWithAttributes.getPathOptions()).toEqual(new Map([['option', 'value']]));
             expect(routeWithAttributes.getAttributes()).toEqual(new Map([['attribute', 'value']]));
+
+            expect(routeWithAttributes._routeInterface).toBe('Route');
         });
     });
 
