@@ -1,7 +1,7 @@
 import { Method } from '@chubbyjs/psr-http-message/dist/RequestInterface';
 import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/RequestHandlerInterface';
 import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/MiddlewareInterface';
-import RouteInterface from '../../../src/Router/RouteInterface';
+import RouteInterface, { PathOptions } from '../../../src/Router/RouteInterface';
 
 class RouteDouble implements RouteInterface {
     getMethod(): Method {
@@ -19,7 +19,7 @@ class RouteDouble implements RouteInterface {
     getMiddlewares(): MiddlewareInterface[] {
         throw new Error('Method not implemented.');
     }
-    getPathOptions(): Map<string, unknown> {
+    getPathOptions(): PathOptions {
         throw new Error('Method not implemented.');
     }
     withAttributes(attributes: Map<string, string>): this {

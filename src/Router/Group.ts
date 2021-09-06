@@ -1,21 +1,21 @@
 import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/MiddlewareInterface';
 import GroupInterface, { isGroup } from './GroupInterface';
 import Route from './Route';
-import RouteInterface from './RouteInterface';
+import RouteInterface, { PathOptions } from './RouteInterface';
 
 class Group implements GroupInterface {
     private constructor(
         private path: string,
         private children: Array<GroupInterface | RouteInterface>,
         private middlewares: Array<MiddlewareInterface>,
-        private pathOptions: Map<string, unknown>,
+        private pathOptions: PathOptions,
     ) {}
 
     public static create(
         path: string,
         children: Array<GroupInterface | RouteInterface>,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Group {
         return new Group(path, children, middlewares, pathOptions);
     }
@@ -42,7 +42,7 @@ class Group implements GroupInterface {
             route.getName(),
             route.getRequestHandler(),
             [...this.middlewares, ...route.getMiddlewares()],
-            new Map([...this.pathOptions, ...route.getPathOptions()]),
+            { ...this.pathOptions, ...route.getPathOptions() },
         );
     }
 

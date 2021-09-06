@@ -2,13 +2,15 @@ import { Method } from '@chubbyjs/psr-http-message/dist/RequestInterface';
 import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/RequestHandlerInterface';
 import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/MiddlewareInterface';
 
+export type PathOptions = { [key: string]: unknown };
+
 interface RouteInterface {
     getMethod(): Method;
     getPath(): string;
     getName(): string;
     getRequestHandler(): RequestHandlerInterface;
     getMiddlewares(): Array<MiddlewareInterface>;
-    getPathOptions(): Map<string, unknown>;
+    getPathOptions(): PathOptions;
     withAttributes(attributes: Map<string, string>): this;
     getAttributes(): Map<string, any>;
     _routeInterface: string;

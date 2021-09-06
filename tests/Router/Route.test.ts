@@ -21,7 +21,7 @@ describe('Route', () => {
             expect(route.getName()).toBe('home');
             expect(route.getRequestHandler()).toBe(handler);
             expect(route.getMiddlewares()).toEqual([]);
-            expect(route.getPathOptions()).toEqual(new Map());
+            expect(route.getPathOptions()).toEqual({});
             expect(route.getAttributes()).toEqual(new Map());
 
             expect(route._routeInterface).toBe('Route');
@@ -31,20 +31,20 @@ describe('Route', () => {
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble);
             const middleware = mockByCalls.create<MiddlewareInterface>(MiddlewareDouble);
 
-            const route = Route.create(Method.GET, '/', 'home', handler, [middleware], new Map([['option', 'value']]));
+            const route = Route.create(Method.GET, '/', 'home', handler, [middleware], { option: 'value' });
 
             const middlewares = route.getMiddlewares();
             middlewares.push(middleware);
 
             const pathOptions = route.getPathOptions();
-            pathOptions.set('option2', 'value2');
+            pathOptions.option2 = 'value2';
 
             expect(route.getMethod()).toBe(Method.GET);
             expect(route.getPath()).toBe('/');
             expect(route.getName()).toBe('home');
             expect(route.getRequestHandler()).toBe(handler);
             expect(route.getMiddlewares()).toEqual([middleware]);
-            expect(route.getPathOptions()).toEqual(new Map([['option', 'value']]));
+            expect(route.getPathOptions()).toEqual({ option: 'value' });
             expect(route.getAttributes()).toEqual(new Map());
 
             expect(route._routeInterface).toBe('Route');
@@ -58,7 +58,7 @@ describe('Route', () => {
             expect(routeWithAttributes.getName()).toBe('home');
             expect(routeWithAttributes.getRequestHandler()).toBe(handler);
             expect(routeWithAttributes.getMiddlewares()).toEqual([middleware]);
-            expect(routeWithAttributes.getPathOptions()).toEqual(new Map([['option', 'value']]));
+            expect(routeWithAttributes.getPathOptions()).toEqual({ option: 'value' });
             expect(routeWithAttributes.getAttributes()).toEqual(new Map([['attribute', 'value']]));
 
             expect(routeWithAttributes._routeInterface).toBe('Route');
@@ -85,7 +85,7 @@ describe('Route', () => {
             expect(route.getName()).toBe('home');
             expect(route.getRequestHandler()).toBe(handler);
             expect(route.getMiddlewares()).toEqual([]);
-            expect(route.getPathOptions()).toEqual(new Map());
+            expect(route.getPathOptions()).toEqual({});
         });
     });
 });

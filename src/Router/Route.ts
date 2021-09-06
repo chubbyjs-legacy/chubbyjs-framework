@@ -1,7 +1,7 @@
 import { Method } from '@chubbyjs/psr-http-message/dist/RequestInterface';
 import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/RequestHandlerInterface';
 import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/MiddlewareInterface';
-import RouteInterface from './RouteInterface';
+import RouteInterface, { PathOptions } from './RouteInterface';
 
 class Route implements RouteInterface {
     private attributes: Map<string, any> = new Map<string, any>();
@@ -12,7 +12,7 @@ class Route implements RouteInterface {
         private name: string,
         private requestHandler: RequestHandlerInterface,
         private middlewares: Array<MiddlewareInterface>,
-        private pathOptions: Map<string, unknown>,
+        private pathOptions: PathOptions,
     ) {}
 
     public static create(
@@ -21,7 +21,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(method, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -31,7 +31,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.DELETE, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -41,7 +41,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.GET, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -51,7 +51,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.HEAD, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -61,7 +61,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.OPTIONS, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -71,7 +71,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.PATCH, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -81,7 +81,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.POST, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -91,7 +91,7 @@ class Route implements RouteInterface {
         name: string,
         requestHandler: RequestHandlerInterface,
         middlewares: Array<MiddlewareInterface> = [],
-        pathOptions: Map<string, unknown> = new Map(),
+        pathOptions: PathOptions = {},
     ): Route {
         return new Route(Method.PUT, path, name, requestHandler, middlewares, pathOptions);
     }
@@ -116,8 +116,8 @@ class Route implements RouteInterface {
         return [...this.middlewares];
     }
 
-    public getPathOptions(): Map<string, unknown> {
-        return new Map(this.pathOptions);
+    public getPathOptions(): PathOptions {
+        return { ...this.pathOptions };
     }
 
     public withAttributes(attributes: Map<string, string>): this {
