@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import NotFoundError from '../../../src/Router/Error/NotFoundError';
 
 describe('NotFoundError', () => {
-    test('constructor', () => {
+    test('create', () => {
         const routerError = NotFoundError.create('/path');
 
         expect(routerError.name).toBe('NotFoundError');

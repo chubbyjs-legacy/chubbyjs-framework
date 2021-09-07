@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import MissingRouteAttributeOnRequestError from '../../../src/Router/Error/MissingRouteAttributeOnRequestError';
 
 describe('MissingRouteAttributeOnRequestError', () => {
-    test('constructor', () => {
+    test('create', () => {
         const routerError = MissingRouteAttributeOnRequestError.create(undefined);
 
         expect(routerError.name).toBe('MissingRouteAttributeOnRequestError');

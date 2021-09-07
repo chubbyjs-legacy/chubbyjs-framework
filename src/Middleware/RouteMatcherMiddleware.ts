@@ -5,8 +5,8 @@ import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/Requ
 import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/MiddlewareInterface';
 import LoggerInterface from '@chubbyjs/psr-log/dist/LoggerInterface';
 import NullLogger from '@chubbyjs/psr-log/dist/NullLogger';
+import RouterErrorInterface, { isRouteError } from '../Router/Error/RouterErrorInterface';
 import RouteMatcherInterface from '../Router/RouteMatcherInterface';
-import RouterError from '../Router/RouterError';
 
 class RouteMatcherMiddleware implements MiddlewareInterface {
     private html: string = `
@@ -61,7 +61,7 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
 
             return handler.handle(request);
         } catch (error) {
-            if (error instanceof RouterError) {
+            if (isRouteError(error)) {
                 return this.routeErrorResponse(error);
             }
 
@@ -69,7 +69,7 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
         }
     }
 
-    private routeErrorResponse(routerError: RouterError): ResponseInterface {
+    private routeErrorResponse(routerError: RouterErrorInterface): ResponseInterface {
         this.logger.info('Route error', {
             name: routerError.name,
             message: routerError.message,

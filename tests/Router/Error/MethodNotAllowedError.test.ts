@@ -3,7 +3,7 @@ import { describe, expect, test } from '@jest/globals';
 import MethodNotAllowedError from '../../../src/Router/Error/MethodNotAllowedError';
 
 describe('MethodNotAllowedError', () => {
-    test('constructor', () => {
+    test('create', () => {
         const routerError = MethodNotAllowedError.create('/path', Method.POST, [Method.GET, Method.HEAD]);
 
         expect(routerError.name).toBe('MethodNotAllowedError');

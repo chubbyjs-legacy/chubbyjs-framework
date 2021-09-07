@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import RouterError from '../../src/Router/RouterError';
+import RouterError from '../../../src/Router/Error/RouterError';
 
 describe('RouterError', () => {
     test('constructor with', () => {
