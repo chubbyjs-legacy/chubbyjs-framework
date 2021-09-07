@@ -45,7 +45,7 @@ npm i @chubbyjs/chubbyjs-framework@1.0.0 \
 ## Usage
 
 ```ts
-import PathToRegexpRouteMatcher from '@chubbyjs/chubbyjs-framework-router-path-to-regexp/dist/Router/PathToRegexpRouteMatcher';
+import PathToRegexpRouteMatcher from '@chubbyjs/chubbyjs-framework-router-path-to-regexp/dist/PathToRegexpRouteMatcher';
 import Application from '@chubbyjs/chubbyjs-framework/dist/Application';
 import ErrorMiddleware from '@chubbyjs/chubbyjs-framework/dist/Middleware/ErrorMiddleware';
 import RouteMatcherMiddleware from '@chubbyjs/chubbyjs-framework/dist/Middleware/RouteMatcherMiddleware';
