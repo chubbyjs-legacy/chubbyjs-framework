@@ -4,11 +4,11 @@ interface UrlGeneratorInterface {
     generateUrl(
         request: ServerRequestInterface,
         name: string,
-        attributes: Map<string, any>,
+        attributes: Map<string, string>,
         queryParams: QueryParams,
     ): string;
 
-    generatePath(name: string, attributes: Map<string, any>, queryParams: QueryParams): string;
+    generatePath(name: string, attributes: Map<string, string>, queryParams: QueryParams): string;
 }
 
 export default UrlGeneratorInterface;
