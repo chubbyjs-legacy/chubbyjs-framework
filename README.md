@@ -67,9 +67,7 @@ const app = new Application([
                     new CallbackRequestHandler(
                         (request: ServerRequestInterface): ResponseInterface => {
                             const response = responseFactory.createResponse(200);
-                            const body = response.getBody();
-                            body.write(`Hello, ${request.getAttribute('name')}`);
-                            body.end();
+                            response.getBody().end(`Hello, ${request.getAttribute('name')}`);
 
                             return response;
                         },

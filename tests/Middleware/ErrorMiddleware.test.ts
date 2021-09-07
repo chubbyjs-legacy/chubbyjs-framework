@@ -23,45 +23,12 @@ describe('ErrorMiddleware', () => {
 
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
+            let responseData = '';
+
             const responseBody = {
-                write: (data: string) => {
-                    expect(data).toMatchInlineSnapshot(`
-"
-        <html>
-            <head>
-                <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
-                <title>Application Error</title>
-                <style>
-                    body {
-                        margin: 0;
-                        padding: 30px;
-                        font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
-                    }
-                    h1 {
-                        margin: 0;
-                        font-size: 48px;
-                        font-weight: normal;
-                        line-height: 48px;
-                    }
-                    .block {
-                        margin-bottom: 20px;
-                    }
-                    .key {
-                        width: 100px;
-                        display: inline-flex;
-                    }
-                    .value {
-                        display: inline-flex;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Application Error</h1><p>A website error has occurred. Sorry for the temporary inconvenience.</p>
-            </body>
-        </html>"
-`);
+                end: (data: string) => {
+                    responseData = data;
                 },
-                end: () => {},
             };
 
             const responseGetBody = mockByCalls.create<ResponseInterface>(ResponseDouble, [
@@ -84,21 +51,7 @@ describe('ErrorMiddleware', () => {
 
             expect(middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(mockByCallsUsed(request)).toBe(true);
-            expect(mockByCallsUsed(responseGetBody)).toBe(true);
-            expect(mockByCallsUsed(responseWithHeader)).toBe(true);
-            expect(mockByCallsUsed(handler)).toBe(true);
-            expect(mockByCallsUsed(responseFactory)).toBe(true);
-        });
-
-        test('without debug, with log', () => {
-            const error = new Error('example');
-
-            const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
-
-            const responseBody = {
-                write: (data: string) => {
-                    expect(data).toMatchInlineSnapshot(`
+            expect(responseData).toMatchInlineSnapshot(`
 "
         <html>
             <head>
@@ -133,8 +86,25 @@ describe('ErrorMiddleware', () => {
             </body>
         </html>"
 `);
+
+            expect(mockByCallsUsed(request)).toBe(true);
+            expect(mockByCallsUsed(responseGetBody)).toBe(true);
+            expect(mockByCallsUsed(responseWithHeader)).toBe(true);
+            expect(mockByCallsUsed(handler)).toBe(true);
+            expect(mockByCallsUsed(responseFactory)).toBe(true);
+        });
+
+        test('without debug, with log', () => {
+            const error = new Error('example');
+
+            const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
+
+            let responseData = '';
+
+            const responseBody = {
+                end: (data: string) => {
+                    responseData = data;
                 },
-                end: () => {},
             };
 
             const responseGetBody = mockByCalls.create<ResponseInterface>(ResponseDouble, [
@@ -166,6 +136,42 @@ describe('ErrorMiddleware', () => {
 
             expect(middleware.process(request, handler)).toBe(responseGetBody);
 
+            expect(responseData).toMatchInlineSnapshot(`
+"
+        <html>
+            <head>
+                <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
+                <title>Application Error</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 30px;
+                        font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
+                    }
+                    h1 {
+                        margin: 0;
+                        font-size: 48px;
+                        font-weight: normal;
+                        line-height: 48px;
+                    }
+                    .block {
+                        margin-bottom: 20px;
+                    }
+                    .key {
+                        width: 100px;
+                        display: inline-flex;
+                    }
+                    .value {
+                        display: inline-flex;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Application Error</h1><p>A website error has occurred. Sorry for the temporary inconvenience.</p>
+            </body>
+        </html>"
+`);
+
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
             expect(mockByCallsUsed(responseWithHeader)).toBe(true);
@@ -191,19 +197,12 @@ describe('ErrorMiddleware', () => {
             test('with debug, with log (' + error.name + ')', () => {
                 const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
-                const responseBody = {
-                    write: (data: string) => {
-                        expect(data).toMatch(/Application Error/);
-                        expect(data).toMatch(/Details/);
-                        expect(data).toMatch(/name/);
-                        expect(data).toMatch(/message/);
-                        expect(data).toMatch(/stack/);
+                let responseData = '';
 
-                        if (e instanceof Error) {
-                            expect(data).toMatch(/Error: example/);
-                        }
+                const responseBody = {
+                    end: (data: string) => {
+                        responseData = data;
                     },
-                    end: () => {},
                 };
 
                 const responseGetBody = mockByCalls.create<ResponseInterface>(ResponseDouble, [
@@ -239,6 +238,16 @@ describe('ErrorMiddleware', () => {
                 const middleware = new ErrorMiddleware(responseFactory, true, logger);
 
                 expect(middleware.process(request, handler)).toBe(responseGetBody);
+
+                expect(responseData).toMatch(/Application Error/);
+                expect(responseData).toMatch(/Details/);
+                expect(responseData).toMatch(/name/);
+                expect(responseData).toMatch(/message/);
+                expect(responseData).toMatch(/stack/);
+
+                if (e instanceof Error) {
+                    expect(responseData).toMatch(/Error: example/);
+                }
 
                 expect(mockByCallsUsed(request)).toBe(true);
                 expect(mockByCallsUsed(responseGetBody)).toBe(true);

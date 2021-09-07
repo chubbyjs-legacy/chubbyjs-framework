@@ -51,9 +51,37 @@ describe('RouteMatcherMiddleware', () => {
         test('without match, without log', () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
+            let responseData = '';
+
             const responseBody = {
-                write: (data: string) => {
-                    expect(data).toMatchInlineSnapshot(`
+                end: (data: string) => {
+                    responseData = data;
+                },
+            };
+
+            const responseGetBody = mockByCalls.create<ResponseInterface>(ResponseDouble, [
+                Call.create('getBody').with().willReturn(responseBody),
+            ]);
+
+            const responseWithHeader = mockByCalls.create<ResponseInterface>(ResponseDouble, [
+                Call.create('withHeader').with('Content-Type', 'text/html').willReturn(responseGetBody),
+            ]);
+
+            const responseFactory = mockByCalls.create<ResponseFactoryInterface>(ResponseFactoryDouble, [
+                Call.create('createResponse').with(404).willReturn(responseWithHeader),
+            ]);
+
+            const routeMatcher = mockByCalls.create<RouteMatcherInterface>(RouteMatcherDouble, [
+                Call.create('match').with(request).willThrowError(NotFoundError.create('/path')),
+            ]);
+
+            const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble);
+
+            const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory);
+
+            expect(middleware.process(request, handler)).toBe(responseGetBody);
+
+            expect(responseData).toMatchInlineSnapshot(`
 "
     <html>
         <head>
@@ -88,31 +116,6 @@ describe('RouteMatcherMiddleware', () => {
         </body>
     </html>"
 `);
-                },
-                end: () => {},
-            };
-
-            const responseGetBody = mockByCalls.create<ResponseInterface>(ResponseDouble, [
-                Call.create('getBody').with().willReturn(responseBody),
-            ]);
-
-            const responseWithHeader = mockByCalls.create<ResponseInterface>(ResponseDouble, [
-                Call.create('withHeader').with('Content-Type', 'text/html').willReturn(responseGetBody),
-            ]);
-
-            const responseFactory = mockByCalls.create<ResponseFactoryInterface>(ResponseFactoryDouble, [
-                Call.create('createResponse').with(404).willReturn(responseWithHeader),
-            ]);
-
-            const routeMatcher = mockByCalls.create<RouteMatcherInterface>(RouteMatcherDouble, [
-                Call.create('match').with(request).willThrowError(NotFoundError.create('/path')),
-            ]);
-
-            const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble);
-
-            const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory);
-
-            expect(middleware.process(request, handler)).toBe(responseGetBody);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -125,11 +128,12 @@ describe('RouteMatcherMiddleware', () => {
         test('without match, with log', () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
+            let responseData = '';
+
             const responseBody = {
-                write: (data: string) => {
-                    expect(data).toMatch(/NotFoundError/);
+                end: (data: string) => {
+                    responseData = data;
                 },
-                end: () => {},
             };
 
             const responseGetBody = mockByCalls.create<ResponseInterface>(ResponseDouble, [
@@ -167,6 +171,8 @@ describe('RouteMatcherMiddleware', () => {
             const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory, logger);
 
             expect(middleware.process(request, handler)).toBe(responseGetBody);
+
+            expect(responseData).toMatch(/NotFoundError/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);

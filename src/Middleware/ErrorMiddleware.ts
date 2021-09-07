@@ -72,8 +72,7 @@ class ErrorMiddleware implements MiddlewareInterface {
 
         const body = response.getBody();
 
-        body.write(this.html.replace('__TITLE__', 'Application Error').replace('__BODY__', htmlBody));
-        body.end();
+        body.end(this.html.replace('__TITLE__', 'Application Error').replace('__BODY__', htmlBody));
 
         return response;
     }

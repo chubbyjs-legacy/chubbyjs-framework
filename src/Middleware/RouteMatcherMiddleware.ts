@@ -80,12 +80,11 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
 
         const body = response.getBody();
 
-        body.write(
+        body.end(
             this.html
                 .replace('__TITLE__', routerError.name)
                 .replace('__BODY__', `<h1>${routerError.name}</h1><p>${routerError.message}</p>`),
         );
-        body.end();
 
         return response;
     }
