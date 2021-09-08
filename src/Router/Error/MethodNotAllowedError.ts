@@ -1,8 +1,8 @@
 import { Method } from '@chubbyjs/psr-http-message/dist/RequestInterface';
 import RouterError from './RouterError';
-import RouterErrorInterface from './RouterErrorInterface';
+import HttpErrorInterface from './HttpErrorInterface';
 
-class MethodNotAllowedError extends RouterError implements RouterErrorInterface {
+class MethodNotAllowedError extends RouterError implements HttpErrorInterface {
     private constructor(message: string) {
         super(MethodNotAllowedError.name, message, 405);
     }
@@ -13,7 +13,7 @@ class MethodNotAllowedError extends RouterError implements RouterErrorInterface 
         );
     }
 
-    _routerErrorInterface: string = 'MethodNotAllowedError';
+    _httpErrorInterface: string = 'MethodNotAllowedError';
 }
 
 export default MethodNotAllowedError;

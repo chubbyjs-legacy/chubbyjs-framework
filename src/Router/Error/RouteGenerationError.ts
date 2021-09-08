@@ -2,7 +2,7 @@ import RouterError from './RouterError';
 
 class RouteGenerationError extends RouterError {
     private constructor(message: string) {
-        super(RouteGenerationError.name, message, 2);
+        super(RouteGenerationError.name, message, 3);
     }
 
     public static create(

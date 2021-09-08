@@ -2,19 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import RouterError from '../../../src/Router/Error/RouterError';
 
 describe('RouterError', () => {
-    test('constructor with', () => {
-        const routerError = new (class extends RouterError {
-            public constructor() {
-                super('name', 'message');
-            }
-        })();
-
-        expect(routerError.name).toBe('name');
-        expect(routerError.message).toBe('message');
-        expect(routerError.code).toBe(500);
-    });
-
-    test('constructor without defaults', () => {
+    test('constructor', () => {
         const routerError = new (class extends RouterError {
             public constructor() {
                 super('name', 'message', 999);

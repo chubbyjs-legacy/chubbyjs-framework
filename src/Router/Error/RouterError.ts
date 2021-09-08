@@ -4,7 +4,7 @@ abstract class RouterError implements Error {
     public code: number;
     public stack?: string;
 
-    protected constructor(name: string, message: string, code: number = 500) {
+    protected constructor(name: string, message: string, code: number) {
         this.name = name;
         this.message = message;
         this.code = code;

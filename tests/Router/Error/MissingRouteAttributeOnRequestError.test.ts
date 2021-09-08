@@ -9,6 +9,6 @@ describe('MissingRouteAttributeOnRequestError', () => {
         expect(routerError.message).toBe(
             'Request attribute "route" missing or wrong type "undefined", please add the "RouteMatcherMiddleware" middleware.',
         );
-        expect(routerError.code).toBe(500);
+        expect(routerError.code).toBe(1);
     });
 });

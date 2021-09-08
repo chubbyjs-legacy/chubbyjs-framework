@@ -7,6 +7,6 @@ describe('MissingRouteByNameError', () => {
 
         expect(routerError.name).toBe('MissingRouteByNameError');
         expect(routerError.message).toBe('Missing route: "hello"');
-        expect(routerError.code).toBe(1);
+        expect(routerError.code).toBe(2);
     });
 });

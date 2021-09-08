@@ -1,10 +1,10 @@
 import RouteMatcherMiddleware from '../../Middleware/RouteMatcherMiddleware';
 import RouterError from './RouterError';
-import RouterErrorInterface from './RouterErrorInterface';
+import HttpErrorInterface from './HttpErrorInterface';
 
-class MissingRouteAttributeOnRequestError extends RouterError implements RouterErrorInterface {
+class MissingRouteAttributeOnRequestError extends RouterError implements HttpErrorInterface {
     private constructor(message: string) {
-        super(MissingRouteAttributeOnRequestError.name, message, 500);
+        super(MissingRouteAttributeOnRequestError.name, message, 1);
     }
 
     public static create(route: unknown): MissingRouteAttributeOnRequestError {
@@ -15,7 +15,7 @@ class MissingRouteAttributeOnRequestError extends RouterError implements RouterE
         );
     }
 
-    _routerErrorInterface: string = 'MissingRouteAttributeOnRequestError';
+    _httpErrorInterface: string = 'MissingRouteAttributeOnRequestError';
 }
 
 export default MissingRouteAttributeOnRequestError;

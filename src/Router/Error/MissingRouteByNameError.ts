@@ -2,7 +2,7 @@ import RouterError from './RouterError';
 
 class MissingRouteByNameError extends RouterError {
     private constructor(message: string) {
-        super(MissingRouteByNameError.name, message, 1);
+        super(MissingRouteByNameError.name, message, 2);
     }
 
     public static create(name: string): MissingRouteByNameError {
