@@ -1,12 +1,19 @@
 {
   "name": "@chubbyjs/chubbyjs-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A minimal, highly performant middleware PSR-15 microframework built with as little complexity as possible, aimed primarily at those developers who want to understand all the vendors they use.",
   "keywords": [
     "chubbyjs",
     "framework",
+    "microframework",
+    "micro framework",
+    "middleware",
+    "requesthandler",
+    "psr-3",
     "psr-7",
-    "psr-15"
+    "psr-11",
+    "psr-15",
+    "psr-17"
   ],
   "author": "Dominik Zogg",
   "license": "MIT",
