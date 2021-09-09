@@ -14,7 +14,7 @@ import RequestHandlerDouble from '../Double/Psr/HttpServerHandler/RequestHandler
 const mockByCalls = new MockByCalls();
 
 describe('LazyRequestHandler', () => {
-    test('process', () => {
+    test('process', async () => {
         const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
         const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
@@ -28,7 +28,7 @@ describe('LazyRequestHandler', () => {
 
         const lazyRequestHandler = new LazyRequestHandler(container, 'id');
 
-        expect(lazyRequestHandler.handle(request)).toBe(response);
+        expect(await lazyRequestHandler.handle(request)).toBe(response);
 
         expect(mockByCallsUsed(request)).toBe(true);
         expect(mockByCallsUsed(response)).toBe(true);

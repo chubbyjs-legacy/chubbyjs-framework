@@ -9,6 +9,7 @@ import { describe, expect, test } from '@jest/globals';
 import Application from '../src/Application';
 import MiddlewareDispatcherInterface from '../src/Middleware/MiddlewareDispatcherInterface';
 import RouteRequestHandler from '../src/RequestHandler/RouteRequestHandler';
+import MissingRouteAttributeOnRequestError from '../src/Router/Error/MissingRouteAttributeOnRequestError';
 import MiddlewareDispatcherDouble from './Double/Middleware/MiddlewareDispatcherDouble';
 import ResponseDouble from './Double/Psr/HttpMessage/ResponseDouble';
 import ServerRequestDouble from './Double/Psr/HttpMessage/ServerRequestDouble';
@@ -18,23 +19,21 @@ const mockByCalls = new MockByCalls();
 
 describe('Application', () => {
     describe('handle', () => {
-        test('without middlewares', () => {
+        test('without middlewares', async () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble, [
                 Call.create('getAttribute').with('route').willReturn(undefined),
             ]);
 
             const application = new Application([]);
 
-            expect(() => {
-                application.handle(request);
-            }).toThrow(
-                'Request attribute "route" missing or wrong type "undefined", please add the "RouteMatcherMiddleware" middleware.',
+            await expect(application.handle(request)).rejects.toEqual(
+                MissingRouteAttributeOnRequestError.create(undefined),
             );
 
             expect(mockByCallsUsed(request)).toBe(true);
         });
 
-        test('with custom request handler', () => {
+        test('with custom request handler', async () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
@@ -45,14 +44,14 @@ describe('Application', () => {
 
             const application = new Application([], undefined, handler);
 
-            expect(application.handle(request)).toBe(response);
+            expect(await application.handle(request)).toBe(response);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(response)).toBe(true);
             expect(mockByCallsUsed(handler)).toBe(true);
         });
 
-        test('with custom middleware dispatcher', () => {
+        test('with custom middleware dispatcher', async () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
@@ -67,7 +66,7 @@ describe('Application', () => {
 
             const application = new Application(middlewares, middlewareDispatcher);
 
-            expect(application.handle(request)).toBe(response);
+            expect(await application.handle(request)).toBe(response);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(response)).toBe(true);

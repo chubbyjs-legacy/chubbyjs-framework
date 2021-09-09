@@ -6,11 +6,11 @@ import MiddlewareDispatcherInterface from './MiddlewareDispatcherInterface';
 import MiddlewareRequestHandler from './MiddlewareRequestHandler';
 
 class MiddlewareDispatcher implements MiddlewareDispatcherInterface {
-    public dispatch(
+    public async dispatch(
         middlewares: Array<MiddlewareInterface>,
         handler: RequestHandlerInterface,
         request: ServerRequestInterface,
-    ): ResponseInterface {
+    ): Promise<ResponseInterface> {
         if (0 === middlewares.length) {
             return handler.handle(request);
         }

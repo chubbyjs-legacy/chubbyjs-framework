@@ -16,7 +16,7 @@ import MiddlewareDouble from '../Double/Psr/HttpServerMiddleware/MiddlewareDoubl
 const mockByCalls = new MockByCalls();
 
 describe('LazyMiddleware', () => {
-    test('process', () => {
+    test('process', async () => {
         const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
         const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
@@ -32,7 +32,7 @@ describe('LazyMiddleware', () => {
 
         const lazyMiddleware = new LazyMiddleware(container, 'id');
 
-        expect(lazyMiddleware.process(request, handler)).toBe(response);
+        expect(await lazyMiddleware.process(request, handler)).toBe(response);
 
         expect(mockByCallsUsed(request)).toBe(true);
         expect(mockByCallsUsed(response)).toBe(true);

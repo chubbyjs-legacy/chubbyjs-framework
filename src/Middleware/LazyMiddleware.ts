@@ -7,7 +7,10 @@ import ContainerInterface from '@chubbyjs/psr-container/dist/ContainerInterface'
 class LazyMiddleware implements MiddlewareInterface {
     public constructor(private container: ContainerInterface, private id: string) {}
 
-    public process(request: ServerRequestInterface, handler: RequestHandlerInterface): ResponseInterface {
+    public async process(
+        request: ServerRequestInterface,
+        handler: RequestHandlerInterface,
+    ): Promise<ResponseInterface> {
         return this.container.get<MiddlewareInterface>(this.id).process(request, handler);
     }
 }

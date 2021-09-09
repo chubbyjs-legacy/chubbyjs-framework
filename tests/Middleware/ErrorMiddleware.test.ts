@@ -18,7 +18,7 @@ const mockByCalls = new MockByCalls();
 
 describe('ErrorMiddleware', () => {
     describe('process', () => {
-        test('without debug, without log', () => {
+        test('without debug, without log', async () => {
             const error = new Error('example');
 
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
@@ -49,7 +49,7 @@ describe('ErrorMiddleware', () => {
 
             const middleware = new ErrorMiddleware(responseFactory);
 
-            expect(middleware.process(request, handler)).toBe(responseGetBody);
+            expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
             expect(responseData).toMatchInlineSnapshot(`
 "
@@ -94,7 +94,7 @@ describe('ErrorMiddleware', () => {
             expect(mockByCallsUsed(responseFactory)).toBe(true);
         });
 
-        test('without debug, with log', () => {
+        test('without debug, with log', async () => {
             const error = new Error('example');
 
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
@@ -134,7 +134,7 @@ describe('ErrorMiddleware', () => {
 
             const middleware = new ErrorMiddleware(responseFactory, false, logger);
 
-            expect(middleware.process(request, handler)).toBe(responseGetBody);
+            expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
             expect(responseData).toMatchInlineSnapshot(`
 "
@@ -194,7 +194,7 @@ describe('ErrorMiddleware', () => {
             { e: { key: 'value' }, error: { name: 'object', message: '{"key":"value"}' } },
             { e: new Array('example'), error: { name: 'object', message: '["example"]' } },
         ].forEach(({ e, error }) => {
-            test('with debug, with log (' + error.name + ')', () => {
+            test('with debug, with log (' + error.name + ')', async () => {
                 const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
                 let responseData = '';
@@ -237,7 +237,7 @@ describe('ErrorMiddleware', () => {
 
                 const middleware = new ErrorMiddleware(responseFactory, true, logger);
 
-                expect(middleware.process(request, handler)).toBe(responseGetBody);
+                expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
                 expect(responseData).toMatch(/Application Error/);
                 expect(responseData).toMatch(/Details/);

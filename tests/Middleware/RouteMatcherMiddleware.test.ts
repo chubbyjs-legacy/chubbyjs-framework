@@ -23,7 +23,7 @@ const mockByCalls = new MockByCalls();
 
 describe('RouteMatcherMiddleware', () => {
     describe('process', () => {
-        test('with random error, without log', () => {
+        test('with random error, without log', async () => {
             const error = new Error('example');
 
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
@@ -38,9 +38,7 @@ describe('RouteMatcherMiddleware', () => {
 
             const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory);
 
-            expect(() => {
-                middleware.process(request, handler);
-            }).toThrow(error);
+            await expect(middleware.process(request, handler)).rejects.toEqual(error);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseFactory)).toBe(true);
@@ -48,7 +46,7 @@ describe('RouteMatcherMiddleware', () => {
             expect(mockByCallsUsed(routeMatcher)).toBe(true);
         });
 
-        test('without match, without log', () => {
+        test('without match, without log', async () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
             let responseData = '';
@@ -79,7 +77,7 @@ describe('RouteMatcherMiddleware', () => {
 
             const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory);
 
-            expect(middleware.process(request, handler)).toBe(responseGetBody);
+            expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
             expect(responseData).toMatchInlineSnapshot(`
 "
@@ -125,7 +123,7 @@ describe('RouteMatcherMiddleware', () => {
             expect(mockByCallsUsed(routeMatcher)).toBe(true);
         });
 
-        test('without match, with log', () => {
+        test('without match, with log', async () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
             let responseData = '';
@@ -170,7 +168,7 @@ describe('RouteMatcherMiddleware', () => {
 
             const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory, logger);
 
-            expect(middleware.process(request, handler)).toBe(responseGetBody);
+            expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
             expect(responseData).toMatch(/NotFoundError/);
 
@@ -183,7 +181,7 @@ describe('RouteMatcherMiddleware', () => {
             expect(mockByCallsUsed(logger)).toBe(true);
         });
 
-        test('with match, with log', () => {
+        test('with match, with log', async () => {
             const attributes = new Map([['key', 'value']]);
 
             const route = mockByCalls.create<RouteInterface>(RouteDouble, [
@@ -216,7 +214,7 @@ describe('RouteMatcherMiddleware', () => {
 
             const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory, logger);
 
-            expect(middleware.process(requestWithAttributeRoute, handler)).toBe(response);
+            expect(await middleware.process(requestWithAttributeRoute, handler)).toBe(response);
 
             expect(mockByCallsUsed(route)).toBe(true);
             expect(mockByCallsUsed(request)).toBe(true);

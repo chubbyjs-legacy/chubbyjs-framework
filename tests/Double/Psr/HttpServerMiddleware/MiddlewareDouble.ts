@@ -4,7 +4,7 @@ import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/Requ
 import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/MiddlewareInterface';
 
 class MiddlewareDouble implements MiddlewareInterface {
-    process(request: ServerRequestInterface, handler: RequestHandlerInterface): ResponseInterface {
+    async process(request: ServerRequestInterface, handler: RequestHandlerInterface): Promise<ResponseInterface> {
         throw new Error('Method not implemented.');
     }
 }

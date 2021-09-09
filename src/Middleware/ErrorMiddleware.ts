@@ -47,7 +47,10 @@ class ErrorMiddleware implements MiddlewareInterface {
         private logger: LoggerInterface = new NullLogger(),
     ) {}
 
-    public process(request: ServerRequestInterface, handler: RequestHandlerInterface): ResponseInterface {
+    public async process(
+        request: ServerRequestInterface,
+        handler: RequestHandlerInterface,
+    ): Promise<ResponseInterface> {
         try {
             return handler.handle(request);
         } catch (error) {

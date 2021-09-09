@@ -49,7 +49,10 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
         private logger: LoggerInterface = new NullLogger(),
     ) {}
 
-    public process(request: ServerRequestInterface, handler: RequestHandlerInterface): ResponseInterface {
+    public async process(
+        request: ServerRequestInterface,
+        handler: RequestHandlerInterface,
+    ): Promise<ResponseInterface> {
         try {
             const route = this.routeMatcher.match(request);
 

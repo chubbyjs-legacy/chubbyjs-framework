@@ -6,7 +6,7 @@ import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/Requ
 class LazyRequestHandler implements RequestHandlerInterface {
     public constructor(private container: ContainerInterface, private id: string) {}
 
-    public handle(request: ServerRequestInterface): ResponseInterface {
+    public async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
         return this.container.get<RequestHandlerInterface>(this.id).handle(request);
     }
 }

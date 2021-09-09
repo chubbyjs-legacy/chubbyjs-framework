@@ -3,9 +3,9 @@ import ServerRequestInterface from '@chubbyjs/psr-http-message/dist/ServerReques
 import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/RequestHandlerInterface';
 
 class CallbackRequestHandler implements RequestHandlerInterface {
-    public constructor(private callback: (request: ServerRequestInterface) => ResponseInterface) {}
+    public constructor(private callback: (request: ServerRequestInterface) => Promise<ResponseInterface>) {}
 
-    public handle(request: ServerRequestInterface): ResponseInterface {
+    public async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
         return this.callback(request);
     }
 }

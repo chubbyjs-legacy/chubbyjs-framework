@@ -13,7 +13,7 @@ class Application implements RequestHandlerInterface {
         private requestHandler: RequestHandlerInterface = new RouteRequestHandler(middlewareDispatcher),
     ) {}
 
-    public handle(request: ServerRequestInterface): ResponseInterface {
+    public async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
         return this.middlewareDispatcher.dispatch(this.middlewares, this.requestHandler, request);
     }
 }

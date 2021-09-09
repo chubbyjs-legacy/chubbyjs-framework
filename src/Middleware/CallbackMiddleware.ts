@@ -5,10 +5,16 @@ import ResponseInterface from '@chubbyjs/psr-http-message/dist/ResponseInterface
 
 class CallbackMiddleware implements MiddlewareInterface {
     public constructor(
-        private callback: (request: ServerRequestInterface, handler: RequestHandlerInterface) => ResponseInterface,
+        private callback: (
+            request: ServerRequestInterface,
+            handler: RequestHandlerInterface,
+        ) => Promise<ResponseInterface>,
     ) {}
 
-    public process(request: ServerRequestInterface, handler: RequestHandlerInterface): ResponseInterface {
+    public async process(
+        request: ServerRequestInterface,
+        handler: RequestHandlerInterface,
+    ): Promise<ResponseInterface> {
         return this.callback(request, handler);
     }
 }

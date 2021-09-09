@@ -8,7 +8,7 @@ import { isRoute } from '../Router/RouteInterface';
 class RouteRequestHandler implements RequestHandlerInterface {
     public constructor(private middlewareDispatcher: MiddlewareDispatcherInterface) {}
 
-    public handle(request: ServerRequestInterface): ResponseInterface {
+    public async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
         const route = request.getAttribute('route');
 
         if (isRoute(route)) {

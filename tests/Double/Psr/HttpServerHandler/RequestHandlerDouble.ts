@@ -3,7 +3,7 @@ import ServerRequestInterface from '@chubbyjs/psr-http-message/dist/ServerReques
 import RequestHandlerInterface from '@chubbyjs/psr-http-server-handler/dist/RequestHandlerInterface';
 
 class RequestHandlerDouble implements RequestHandlerInterface {
-    handle(request: ServerRequestInterface): ResponseInterface {
+    async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
         throw new Error('Method not implemented.');
     }
 }

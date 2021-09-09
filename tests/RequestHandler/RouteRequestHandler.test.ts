@@ -19,7 +19,9 @@ const mockByCalls = new MockByCalls();
 
 describe('RouteRequestHandler', () => {
     describe('handle', () => {
-        test('without route, expect error', () => {
+        test('without route, expect error', async () => {
+            const error = MissingRouteAttributeOnRequestError.create(undefined);
+
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble, [
                 Call.create('getAttribute').with('route').willReturn(undefined),
             ]);
@@ -28,15 +30,13 @@ describe('RouteRequestHandler', () => {
 
             const handler = new RouteRequestHandler(middlewareDispatcher);
 
-            expect(() => {
-                handler.handle(request);
-            }).toThrow(MissingRouteAttributeOnRequestError.create(undefined));
+            await expect(handler.handle(request)).rejects.toEqual(error);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(middlewareDispatcher)).toBe(true);
         });
 
-        test('with route, expect response', () => {
+        test('with route, expect response', async () => {
             const routeMiddleware = mockByCalls.create<RequestHandlerInterface>(MiddlewareDouble);
 
             const routeMiddlewares = [routeMiddleware];
@@ -63,7 +63,7 @@ describe('RouteRequestHandler', () => {
 
             const handler = new RouteRequestHandler(middlewareDispatcher);
 
-            expect(handler.handle(request)).toBe(response);
+            expect(await handler.handle(request)).toBe(response);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(response)).toBe(true);

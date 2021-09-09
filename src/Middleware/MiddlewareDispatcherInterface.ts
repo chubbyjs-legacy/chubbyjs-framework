@@ -8,7 +8,7 @@ interface MiddlewareDispatcherInterface {
         middlewares: Array<MiddlewareInterface>,
         handler: RequestHandlerInterface,
         request: ServerRequestInterface,
-    ): ResponseInterface;
+    ): Promise<ResponseInterface>;
 }
 
 export default MiddlewareDispatcherInterface;

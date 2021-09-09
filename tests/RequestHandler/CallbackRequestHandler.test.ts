@@ -9,13 +9,13 @@ import ServerRequestDouble from '../Double/Psr/HttpMessage/ServerRequestDouble';
 const mockByCalls = new MockByCalls();
 
 describe('CallbackRequestHandler', () => {
-    test('handle', () => {
+    test('handle', async () => {
         const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
         const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
-        const handler = new CallbackRequestHandler((request: ServerRequestInterface) => response);
+        const handler = new CallbackRequestHandler(async (request: ServerRequestInterface) => response);
 
-        expect(handler.handle(request)).toBe(response);
+        expect(await handler.handle(request)).toBe(response);
 
         expect(mockByCallsUsed(request)).toBe(true);
         expect(mockByCallsUsed(response)).toBe(true);

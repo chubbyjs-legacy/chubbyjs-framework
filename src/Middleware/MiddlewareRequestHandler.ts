@@ -6,7 +6,7 @@ import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/Middl
 class MiddlewareRequestHandler implements RequestHandlerInterface {
     public constructor(private middleware: MiddlewareInterface, private handler: RequestHandlerInterface) {}
 
-    public handle(request: ServerRequestInterface): ResponseInterface {
+    public async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
         return this.middleware.process(request, this.handler);
     }
 }

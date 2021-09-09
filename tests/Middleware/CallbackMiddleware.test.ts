@@ -12,7 +12,7 @@ import RequestHandlerDouble from '../Double/Psr/HttpServerHandler/RequestHandler
 const mockByCalls = new MockByCalls();
 
 describe('CallbackMiddleware', () => {
-    test('process', () => {
+    test('process', async () => {
         const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
         const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
@@ -21,12 +21,12 @@ describe('CallbackMiddleware', () => {
         ]);
 
         const middleware = new CallbackMiddleware(
-            (request: ServerRequestInterface, handler: RequestHandlerInterface) => {
+            (request: ServerRequestInterface, handler: RequestHandlerInterface): Promise<ResponseInterface> => {
                 return handler.handle(request);
             },
         );
 
-        expect(middleware.process(request, handler)).toBe(response);
+        expect(await middleware.process(request, handler)).toBe(response);
 
         expect(mockByCallsUsed(request)).toBe(true);
         expect(mockByCallsUsed(response)).toBe(true);

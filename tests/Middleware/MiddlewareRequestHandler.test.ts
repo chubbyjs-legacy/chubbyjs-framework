@@ -15,7 +15,7 @@ const mockByCalls = new MockByCalls();
 
 describe('MiddlewareRequestHandler', () => {
     describe('dispatch', () => {
-        test('without middleware', () => {
+        test('without middleware', async () => {
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
@@ -33,7 +33,7 @@ describe('MiddlewareRequestHandler', () => {
 
             const middlewareRequestHandler = new MiddlewareRequestHandler(middleware, handler);
 
-            expect(middlewareRequestHandler.handle(request)).toBe(response);
+            expect(await middlewareRequestHandler.handle(request)).toBe(response);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(response)).toBe(true);

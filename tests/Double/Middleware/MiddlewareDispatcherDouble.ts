@@ -5,11 +5,11 @@ import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/Middl
 import MiddlewareDispatcherInterface from '../../../src/Middleware/MiddlewareDispatcherInterface';
 
 class MiddlewareDispatcherDouble implements MiddlewareDispatcherInterface {
-    dispatch(
+    async dispatch(
         middlewares: MiddlewareInterface[],
         handler: RequestHandlerInterface,
         request: ServerRequestInterface,
-    ): ResponseInterface {
+    ): Promise<ResponseInterface> {
         throw new Error('Method not implemented.');
     }
 }

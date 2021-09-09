@@ -27,16 +27,16 @@ A minimal, highly [performant][2] middleware [PSR-15][3] microframework built wi
  * [@chubbyjs/psr-container][4]: ^1.0.0
  * [@chubbyjs/psr-http-factory][5]: ^1.1.0
  * [@chubbyjs/psr-http-message][6]: ^1.2.1
- * [@chubbyjs/psr-http-server-handler][7]: ^1.0.0
- * [@chubbyjs/psr-http-server-middleware][8]: ^1.0.0
- * [@chubbyjs/psr-log][9]: ^1.0.2
+ * [@chubbyjs/psr-http-server-handler][7]: ^1.1.1
+ * [@chubbyjs/psr-http-server-middleware][8]: ^1.1.1
+ * [@chubbyjs/psr-log][9]: ^1.0.3
 
 ## Installation
 
 Through [NPM](https://www.npmjs.com) as [@chubbyjs/chubbyjs-framework][1].
 
 ```sh
-npm i @chubbyjs/chubbyjs-framework@1.0.3 \
+npm i @chubbyjs/chubbyjs-framework@1.1.0 \
     @chubbyjs/chubbyjs-framework-router-path-to-regexp@1.0.0 \
     @chubbyjs/chubbyjs-http-message@1.1.1 \
     @chubbyjs/chubbyjs-node-psr-http-message-bridge@1.2.1
@@ -73,7 +73,7 @@ const app = new Application([
                     '/hello/:name([a-z]+)',
                     'hello',
                     new CallbackRequestHandler(
-                        (request: ServerRequestInterface): ResponseInterface => {
+                        async (request: ServerRequestInterface): Promise<ResponseInterface> => {
                             const response = responseFactory.createResponse(200);
                             response.getBody().end(`Hello, ${request.getAttribute('name')}`);
 
@@ -95,9 +95,9 @@ const psrRequestFactory = new PsrRequestFactory(
 
 const nodeResponseEmitter = new NodeResponseEmitter();
 
-const server = createServer((req: IncomingMessage, res: ServerResponse) => {
+const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
     const serverRequest = psrRequestFactory.create(req);
-    const response = app.handle(serverRequest);
+    const response = await app.handle(serverRequest);
 
     nodeResponseEmitter.emit(response, res);
 });
