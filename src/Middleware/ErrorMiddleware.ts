@@ -52,7 +52,7 @@ class ErrorMiddleware implements MiddlewareInterface {
         handler: RequestHandlerInterface,
     ): Promise<ResponseInterface> {
         try {
-            return handler.handle(request);
+            return await handler.handle(request);
         } catch (error) {
             return this.handleError(error);
         }

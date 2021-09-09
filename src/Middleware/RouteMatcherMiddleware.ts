@@ -62,7 +62,7 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
                 request = request.withAttribute(key, value);
             });
 
-            return handler.handle(request);
+            return await handler.handle(request);
         } catch (error) {
             if (isHttpError(error)) {
                 return this.routeErrorResponse(error);
