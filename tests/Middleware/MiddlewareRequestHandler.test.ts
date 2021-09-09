@@ -20,13 +20,15 @@ describe('MiddlewareRequestHandler', () => {
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
-                Call.create('handle').with(request).willReturn(response),
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => response),
             ]);
 
             const middleware = mockByCalls.create<MiddlewareInterface>(MiddlewareDouble, [
                 Call.create('process')
                     .with(request, handler)
-                    .willReturnCallback((request: ServerRequestInterface, handler: RequestHandlerInterface) => {
+                    .willReturnCallback(async (request: ServerRequestInterface, handler: RequestHandlerInterface) => {
                         return handler.handle(request);
                     }),
             ]);

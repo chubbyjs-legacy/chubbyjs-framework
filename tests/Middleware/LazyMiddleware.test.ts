@@ -23,7 +23,9 @@ describe('LazyMiddleware', () => {
         const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble);
 
         const middleware = mockByCalls.create<MiddlewareInterface>(MiddlewareDouble, [
-            Call.create('process').with(request, handler).willReturn(response),
+            Call.create('process')
+                .with(request, handler)
+                .willReturnCallback(async () => response),
         ]);
 
         const container = mockByCalls.create<ContainerInterface>(ContainerDouble, [

@@ -39,7 +39,9 @@ describe('Application', () => {
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
-                Call.create('handle').with(request).willReturn(response),
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => response),
             ]);
 
             const application = new Application([], undefined, handler);

@@ -22,7 +22,9 @@ describe('MiddlewareDispatcher', () => {
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
-                Call.create('handle').with(request).willReturn(response),
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => response),
             ]);
 
             const middlewareDispatcher = new MiddlewareDispatcher();
@@ -47,7 +49,9 @@ describe('MiddlewareDispatcher', () => {
 
             const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
 
-            const handlerHandle = Call.create('handle').with(request).willReturn(response);
+            const handlerHandle = Call.create('handle')
+                .with(request)
+                .willReturnCallback(async () => response);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
                 handlerHandle,
@@ -56,7 +60,7 @@ describe('MiddlewareDispatcher', () => {
 
             const middlware1Process = Call.create('process')
                 .with(request, new ArgumentInstanceOf(MiddlewareRequestHandler))
-                .willReturnCallback((request: ServerRequestInterface, handler: RequestHandlerInterface) => {
+                .willReturnCallback(async (request: ServerRequestInterface, handler: RequestHandlerInterface) => {
                     return handler.handle(request.withAttribute('middleware', 'middleware1'));
                 });
 
@@ -67,7 +71,7 @@ describe('MiddlewareDispatcher', () => {
 
             const middleware2Process = Call.create('process')
                 .with(request, handler)
-                .willReturnCallback((request: ServerRequestInterface, handler: RequestHandlerInterface) => {
+                .willReturnCallback(async (request: ServerRequestInterface, handler: RequestHandlerInterface) => {
                     return handler.handle(request.withAttribute('middleware', 'middleware2'));
                 });
 

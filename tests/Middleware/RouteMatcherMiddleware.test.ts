@@ -209,7 +209,9 @@ describe('RouteMatcherMiddleware', () => {
             const logger = mockByCalls.create<LoggerInterface>(LoggerDouble);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
-                Call.create('handle').with(request).willReturn(response),
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => response),
             ]);
 
             const middleware = new RouteMatcherMiddleware(routeMatcher, responseFactory, logger);

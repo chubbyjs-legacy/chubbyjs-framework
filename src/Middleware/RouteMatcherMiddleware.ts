@@ -6,6 +6,7 @@ import MiddlewareInterface from '@chubbyjs/psr-http-server-middleware/dist/Middl
 import LoggerInterface from '@chubbyjs/psr-log/dist/LoggerInterface';
 import NullLogger from '@chubbyjs/psr-log/dist/NullLogger';
 import HttpErrorInterface, { isHttpError } from '../Router/Error/HttpErrorInterface';
+import RouteInterface from '../Router/RouteInterface';
 import RouteMatcherInterface from '../Router/RouteMatcherInterface';
 
 class RouteMatcherMiddleware implements MiddlewareInterface {
@@ -53,16 +54,10 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
         request: ServerRequestInterface,
         handler: RequestHandlerInterface,
     ): Promise<ResponseInterface> {
+        let route: RouteInterface;
+
         try {
-            const route = this.routeMatcher.match(request);
-
-            request = request.withAttribute('route', route);
-
-            route.getAttributes().forEach((value, key) => {
-                request = request.withAttribute(key, value);
-            });
-
-            return await handler.handle(request);
+            route = this.routeMatcher.match(request);
         } catch (error) {
             if (isHttpError(error)) {
                 return this.routeErrorResponse(error);
@@ -70,6 +65,14 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
 
             throw error;
         }
+
+        request = request.withAttribute('route', route);
+
+        route.getAttributes().forEach((value, key) => {
+            request = request.withAttribute(key, value);
+        });
+
+        return handler.handle(request);
     }
 
     private routeErrorResponse(routerError: HttpErrorInterface): ResponseInterface {

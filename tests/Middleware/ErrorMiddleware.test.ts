@@ -18,6 +18,28 @@ const mockByCalls = new MockByCalls();
 
 describe('ErrorMiddleware', () => {
     describe('process', () => {
+        test('successful', async () => {
+            const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
+            const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
+
+            const responseFactory = mockByCalls.create<ResponseFactoryInterface>(ResponseFactoryDouble);
+
+            const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => response),
+            ]);
+
+            const middleware = new ErrorMiddleware(responseFactory);
+
+            expect(await middleware.process(request, handler)).toBe(response);
+
+            expect(mockByCallsUsed(request)).toBe(true);
+            expect(mockByCallsUsed(response)).toBe(true);
+            expect(mockByCallsUsed(handler)).toBe(true);
+            expect(mockByCallsUsed(responseFactory)).toBe(true);
+        });
+
         test('without debug, without log', async () => {
             const error = new Error('example');
 
@@ -44,7 +66,11 @@ describe('ErrorMiddleware', () => {
             ]);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
-                Call.create('handle').with(request).willThrowError(error),
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => {
+                        throw error;
+                    }),
             ]);
 
             const middleware = new ErrorMiddleware(responseFactory);
@@ -120,7 +146,11 @@ describe('ErrorMiddleware', () => {
             ]);
 
             const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
-                Call.create('handle').with(request).willThrowError(error),
+                Call.create('handle')
+                    .with(request)
+                    .willReturnCallback(async () => {
+                        throw error;
+                    }),
             ]);
 
             const logger = mockByCalls.create<LoggerInterface>(LoggerDouble, [
@@ -220,7 +250,7 @@ describe('ErrorMiddleware', () => {
                 const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
                     Call.create('handle')
                         .with(request)
-                        .willReturnCallback(() => {
+                        .willReturnCallback(async () => {
                             throw e;
                         }),
                 ]);
