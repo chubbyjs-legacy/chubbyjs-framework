@@ -63,16 +63,14 @@ class ErrorMiddleware implements MiddlewareInterface {
     }
 
     private handleError(e: any): ResponseInterface {
-        const error = this.eToError(e);
-
-        this.logger.error('Error', { error });
+        this.logger.error('Error', { error: this.eToError(e) });
 
         let htmlBody =
             '<h1>Application Error</h1>' +
             '<p>A website error has occurred. Sorry for the temporary inconvenience.</p>';
 
         if (this.debug) {
-            htmlBody += this.addDebugToBody(error);
+            htmlBody += this.addDebugToBody(e);
         }
 
         const response = this.responseFactory.createResponse(500).withHeader('Content-Type', 'text/html');
@@ -109,14 +107,37 @@ class ErrorMiddleware implements MiddlewareInterface {
         };
     }
 
-    private addDebugToBody(error: Error): string {
-        return `
-            <h2>Details</h2>
-            <div class"block">
-                <div><div class="key"><strong>name</strong></div><div class="value">${error.name}</div></div>
-                <div><div class="key"><strong>message</strong></div><div class="value">${error.message}</div></div>
-                <div><div class="key"><strong>stack</strong></div><div class="value">${error.stack ?? ''}</div></div>
-            </div>`;
+    private addDebugToBody(e: unknown): string {
+        let error: Error | undefined;
+        const errors = [];
+
+        do {
+            error = this.eToError(e);
+            errors.push(error);
+        } while ((e = e && (e as { previous: unknown }).previous));
+
+        return (
+            '<h2>Details</h2>' +
+            errors
+                .map(
+                    (error) => `
+                    <div class="block">
+                        <div>
+                            <div class="key"><strong>name</strong></div>
+                            <div class="value">${error.name}</div>
+                        </div>
+                        <div>
+                            <div class="key"><strong>message</strong></div>
+                            <div class="value">${error.message}</div>
+                        </div>
+                        <div>
+                            <div class="key"><strong>stack</strong></div>
+                            <div class="value"><pre>${error.stack ?? ''}</pre></div>
+                        </div>
+                    </div>`,
+                )
+                .join('')
+        );
     }
 }
 

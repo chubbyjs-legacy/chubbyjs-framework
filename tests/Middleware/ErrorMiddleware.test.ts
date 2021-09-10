@@ -274,6 +274,7 @@ describe('ErrorMiddleware', () => {
                 expect(responseData).toMatch(/name/);
                 expect(responseData).toMatch(/message/);
                 expect(responseData).toMatch(/stack/);
+                expect(responseData).toMatch(/pre/);
 
                 if (e instanceof Error) {
                     expect(responseData).toMatch(/Error: example/);
