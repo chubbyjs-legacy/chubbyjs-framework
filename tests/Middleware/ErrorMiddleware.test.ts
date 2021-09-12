@@ -77,41 +77,7 @@ describe('ErrorMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatchInlineSnapshot(`
-"
-        <html>
-            <head>
-                <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
-                <title>Application Error</title>
-                <style>
-                    body {
-                        margin: 0;
-                        padding: 30px;
-                        font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
-                    }
-                    h1 {
-                        margin: 0;
-                        font-size: 48px;
-                        font-weight: normal;
-                        line-height: 48px;
-                    }
-                    .block {
-                        margin-bottom: 20px;
-                    }
-                    .key {
-                        width: 100px;
-                        display: inline-flex;
-                    }
-                    .value {
-                        display: inline-flex;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Application Error</h1><p>A website error has occurred. Sorry for the temporary inconvenience.</p>
-            </body>
-        </html>"
-`);
+            expect(responseData).toMatch(/Internal Server Error/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -166,41 +132,7 @@ describe('ErrorMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatchInlineSnapshot(`
-"
-        <html>
-            <head>
-                <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
-                <title>Application Error</title>
-                <style>
-                    body {
-                        margin: 0;
-                        padding: 30px;
-                        font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
-                    }
-                    h1 {
-                        margin: 0;
-                        font-size: 48px;
-                        font-weight: normal;
-                        line-height: 48px;
-                    }
-                    .block {
-                        margin-bottom: 20px;
-                    }
-                    .key {
-                        width: 100px;
-                        display: inline-flex;
-                    }
-                    .value {
-                        display: inline-flex;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Application Error</h1><p>A website error has occurred. Sorry for the temporary inconvenience.</p>
-            </body>
-        </html>"
-`);
+            expect(responseData).toMatch(/Internal Server Error/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -269,15 +201,11 @@ describe('ErrorMiddleware', () => {
 
                 expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-                expect(responseData).toMatch(/Application Error/);
-                expect(responseData).toMatch(/Details/);
-                expect(responseData).toMatch(/name/);
-                expect(responseData).toMatch(/message/);
-                expect(responseData).toMatch(/stack/);
-                expect(responseData).toMatch(/pre/);
+                expect(responseData).toMatch(/Internal Server Error/);
 
                 if (e instanceof Error) {
                     expect(responseData).toMatch(/Error: example/);
+                    expect(responseData).toMatch(/ErrorMiddleware/);
                 }
 
                 expect(mockByCallsUsed(request)).toBe(true);

@@ -4,7 +4,7 @@ import HttpErrorInterface from './HttpErrorInterface';
 
 class MethodNotAllowedError extends RouterError implements HttpErrorInterface {
     private constructor(message: string) {
-        super(MethodNotAllowedError.name, message, 405);
+        super('Method Not Allowed', message, 405);
     }
 
     public static create(path: string, method: Method, methods: Array<string>): MethodNotAllowedError {

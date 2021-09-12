@@ -6,7 +6,7 @@ describe('MethodNotAllowedError', () => {
     test('create', () => {
         const routerError = MethodNotAllowedError.create('/path', Method.POST, [Method.GET, Method.HEAD]);
 
-        expect(routerError.name).toBe('MethodNotAllowedError');
+        expect(routerError.name).toBe('Method Not Allowed');
         expect(routerError.message).toBe(
             'Method "POST" at path "/path" is not allowed. Must be one of: "GET", "HEAD".',
         );

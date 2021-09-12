@@ -3,7 +3,7 @@ import HttpErrorInterface from './HttpErrorInterface';
 
 class NotFoundError extends RouterError implements HttpErrorInterface {
     private constructor(message: string) {
-        super(NotFoundError.name, message, 404);
+        super('Not Found', message, 404);
     }
 
     public static create(path: string): NotFoundError {

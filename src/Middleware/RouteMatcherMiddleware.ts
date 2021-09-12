@@ -11,38 +11,117 @@ import RouteMatcherInterface from '../Router/RouteMatcherInterface';
 
 class RouteMatcherMiddleware implements MiddlewareInterface {
     private html: string = `
-    <html>
-        <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-            <title>__TITLE__</title>
-            <style>
-                body {
-                    margin: 0;
-                    padding: 30px;
-                    font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
-                }
-                h1 {
-                    margin: 0;
-                    font-size: 48px;
-                    font-weight: normal;
-                    line-height: 48px;
-                }
-                .block {
-                    margin-bottom: 20px;
-                }
-                .key {
-                    width: 100px;
-                    display: inline-flex;
-                }
-                .value {
-                    display: inline-flex;
-                }
-            </style>
-        </head>
-        <body>
-            __BODY__
-        </body>
-    </html>`;
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                <title>__TITLE__</title>
+                <style>
+                    html {
+                        font-family: Helvetica, Arial, Verdana, sans-serif;
+                        line-height: 1.5;
+                        tab-size: 4;
+                    }
+
+                    body {
+                        margin: 0;
+                    }
+
+                    * {
+                        border-width: 0;
+                        border-style: solid;
+                    }
+
+                    .container {
+                        width: 100%
+                    }
+
+                    @media (min-width:640px) {
+                        .container {
+                            max-width: 640px
+                        }
+                    }
+
+                    @media (min-width:768px) {
+                        .container {
+                            max-width: 768px
+                        }
+                    }
+
+                    @media (min-width:1024px) {
+                        .container {
+                            max-width: 1024px
+                        }
+                    }
+
+                    @media (min-width:1280px) {
+                        .container {
+                            max-width: 1280px
+                        }
+                    }
+
+                    @media (min-width:1536px) {
+                        .container {
+                            max-width: 1536px
+                        }
+                    }
+
+                    .mx-auto {
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+                    .inline-block {
+                        display: inline-block;
+                    }
+
+                    .align-top {
+                        vertical-align: top;
+                    }
+
+                    .mt-3 {
+                        margin-top: .75rem;
+                    }
+
+                    .mt-12 {
+                        margin-top: 3rem;
+                    }
+
+                    .mr-5 {
+                        margin-right: 1.25rem;
+                    }
+
+                    .pr-5 {
+                        padding-right: 1.25rem;
+                    }
+
+                    .text-gray-400 {
+                        --tw-text-opacity: 1;
+                        color: rgba(156, 163, 175, var(--tw-text-opacity));
+                    }
+
+                    .text-5xl {
+                        font-size: 3rem;
+                        line-height: 1;
+                    }
+
+                    .tracking-tighter {
+                        letter-spacing: -.05em;
+                    }
+
+                    .border-gray-400 {
+                        --tw-border-opacity: 1;
+                        border-color: rgba(156, 163, 175, var(--tw-border-opacity));
+                    }
+
+                    .border-r-2 {
+                        border-right-width: 2px;
+                    }
+                </style>
+            </head>
+            <body>
+                __BODY__
+            </body>
+        </html>`;
 
     public constructor(
         private routeMatcher: RouteMatcherInterface,
@@ -86,11 +165,16 @@ class RouteMatcherMiddleware implements MiddlewareInterface {
 
         const body = response.getBody();
 
-        body.end(
-            this.html
-                .replace('__TITLE__', routerError.name)
-                .replace('__BODY__', `<h1>${routerError.name}</h1><p>${routerError.message}</p>`),
-        );
+        const htmlBody = `
+            <div class="container mx-auto tracking-tighter mt-12">
+                <div class="inline-block align-top text-gray-400 border-r-2 border-gray-400 pr-5 mr-5 text-5xl">${routerError.code}</div>
+                <div class="inline-block align-top">
+                    <div class="text-5xl">${routerError.name}</div>
+                    <div class="mt-3">${routerError.message}</div>
+                </div>
+            </div>`;
+
+        body.end(this.html.replace('__TITLE__', routerError.name).replace('__BODY__', htmlBody));
 
         return response;
     }

@@ -6,7 +6,7 @@ describe('RouteGenerationError', () => {
         test('create without error', () => {
             const routerError = RouteGenerationError.create('hello', '/hello/:name([a-z]+)', undefined);
 
-            expect(routerError.name).toBe('RouteGenerationError');
+            expect(routerError.name).toBe('Route Generation');
             expect(routerError.message).toBe(
                 'Route generation for route "hello" with pattern "/hello/:name([a-z]+)" with attributes "" failed.',
             );
@@ -23,7 +23,7 @@ describe('RouteGenerationError', () => {
                 error,
             );
 
-            expect(routerError.name).toBe('RouteGenerationError');
+            expect(routerError.name).toBe('Route Generation');
             expect(routerError.message).toBe(
                 'Route generation for route "hello" with pattern "/hello/:name([a-z]+)" with attributes "{"name":"firstname-lastname"}" failed. Cause: Name attribute value does not match the pattern.',
             );

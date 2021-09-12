@@ -13,26 +13,105 @@ class ErrorMiddleware implements MiddlewareInterface {
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
                 <title>__TITLE__</title>
                 <style>
+                    html {
+                        font-family: Helvetica, Arial, Verdana, sans-serif;
+                        line-height: 1.5;
+                        tab-size: 4;
+                    }
+
                     body {
                         margin: 0;
-                        padding: 30px;
-                        font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
                     }
-                    h1 {
-                        margin: 0;
-                        font-size: 48px;
-                        font-weight: normal;
-                        line-height: 48px;
+
+                    * {
+                        border-width: 0;
+                        border-style: solid;
                     }
-                    .block {
-                        margin-bottom: 20px;
+
+                    .container {
+                        width: 100%
                     }
-                    .key {
-                        width: 100px;
-                        display: inline-flex;
+
+                    @media (min-width:640px) {
+                        .container {
+                            max-width: 640px
+                        }
                     }
-                    .value {
-                        display: inline-flex;
+
+                    @media (min-width:768px) {
+                        .container {
+                            max-width: 768px
+                        }
+                    }
+
+                    @media (min-width:1024px) {
+                        .container {
+                            max-width: 1024px
+                        }
+                    }
+
+                    @media (min-width:1280px) {
+                        .container {
+                            max-width: 1280px
+                        }
+                    }
+
+                    @media (min-width:1536px) {
+                        .container {
+                            max-width: 1536px
+                        }
+                    }
+
+                    .mx-auto {
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+                    .inline-block {
+                        display: inline-block;
+                    }
+
+                    .align-top {
+                        vertical-align: top;
+                    }
+
+                    .mt-3 {
+                        margin-top: .75rem;
+                    }
+
+                    .mt-12 {
+                        margin-top: 3rem;
+                    }
+
+                    .mr-5 {
+                        margin-right: 1.25rem;
+                    }
+
+                    .pr-5 {
+                        padding-right: 1.25rem;
+                    }
+
+                    .text-gray-400 {
+                        --tw-text-opacity: 1;
+                        color: rgba(156, 163, 175, var(--tw-text-opacity));
+                    }
+
+                    .text-5xl {
+                        font-size: 3rem;
+                        line-height: 1;
+                    }
+
+                    .tracking-tighter {
+                        letter-spacing: -.05em;
+                    }
+
+                    .border-gray-400 {
+                        --tw-border-opacity: 1;
+                        border-color: rgba(156, 163, 175, var(--tw-border-opacity));
+                    }
+
+                    .border-r-2 {
+                        border-right-width: 2px;
                     }
                 </style>
             </head>
@@ -62,22 +141,26 @@ class ErrorMiddleware implements MiddlewareInterface {
         });
     }
 
-    private handleError(e: any): ResponseInterface {
-        this.logger.error('Error', { error: this.eToError(e) });
+    private handleError(e: unknown): ResponseInterface {
+        const error = this.eToError(e);
 
-        let htmlBody =
-            '<h1>Application Error</h1>' +
-            '<p>A website error has occurred. Sorry for the temporary inconvenience.</p>';
+        this.logger.error('Error', { error });
 
-        if (this.debug) {
-            htmlBody += this.addDebugToBody(e);
-        }
+        const htmlBody = `
+            <div class="container mx-auto tracking-tighter mt-12">
+                <div class="inline-block align-top text-gray-400 border-r-2 border-gray-400 pr-5 mr-5 text-5xl">500</div>
+                <div class="inline-block align-top">
+                    <div class="text-5xl">Internal Server Error</div>
+                    <div class="mt-3">The requested page failed to load, please try again later.</div>
+                    ${this.debug ? this.addDebugToBody(error) : ''}
+                </div>
+            </div>`;
 
         const response = this.responseFactory.createResponse(500).withHeader('Content-Type', 'text/html');
 
         const body = response.getBody();
 
-        body.end(this.html.replace('__TITLE__', 'Application Error').replace('__BODY__', htmlBody));
+        body.end(this.html.replace('__TITLE__', 'Internal Server Error').replace('__BODY__', htmlBody));
 
         return response;
     }
@@ -116,28 +199,15 @@ class ErrorMiddleware implements MiddlewareInterface {
             errors.push(error);
         } while ((e = e && (e as { previous: unknown }).previous));
 
-        return (
-            '<h2>Details</h2>' +
-            errors
-                .map(
-                    (error) => `
-                    <div class="block">
-                        <div>
-                            <div class="key"><strong>name</strong></div>
-                            <div class="value">${error.name}</div>
-                        </div>
-                        <div>
-                            <div class="key"><strong>message</strong></div>
-                            <div class="value">${error.message}</div>
-                        </div>
-                        <div>
-                            <div class="key"><strong>stack</strong></div>
-                            <div class="value"><pre>${error.stack ?? ''}</pre></div>
-                        </div>
-                    </div>`,
-                )
-                .join('')
-        );
+        return errors
+            .map((error) => {
+                if (!error.stack) {
+                    return `<div class="mt-3">${error.name}: ${error.message}</div>`;
+                }
+
+                return `<div class="mt-3">${error.stack.replace(/at /gm, '<br>&nbsp;&nbsp;&nbsp;&nbsp;at ')}</div>`;
+            })
+            .join('');
     }
 }
 

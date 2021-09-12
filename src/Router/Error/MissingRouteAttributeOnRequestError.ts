@@ -4,7 +4,7 @@ import HttpErrorInterface from './HttpErrorInterface';
 
 class MissingRouteAttributeOnRequestError extends RouterError implements HttpErrorInterface {
     private constructor(message: string) {
-        super(MissingRouteAttributeOnRequestError.name, message, 1);
+        super('Missing Route Attribute On Request', message, 1);
     }
 
     public static create(route: unknown): MissingRouteAttributeOnRequestError {

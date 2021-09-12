@@ -79,41 +79,7 @@ describe('RouteMatcherMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatchInlineSnapshot(`
-"
-    <html>
-        <head>
-            <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
-            <title>NotFoundError</title>
-            <style>
-                body {
-                    margin: 0;
-                    padding: 30px;
-                    font: 12px/1.5 Helvetica, Arial, Verdana, sans-serif;
-                }
-                h1 {
-                    margin: 0;
-                    font-size: 48px;
-                    font-weight: normal;
-                    line-height: 48px;
-                }
-                .block {
-                    margin-bottom: 20px;
-                }
-                .key {
-                    width: 100px;
-                    display: inline-flex;
-                }
-                .value {
-                    display: inline-flex;
-                }
-            </style>
-        </head>
-        <body>
-            <h1>NotFoundError</h1><p>The page \\"/path\\" you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.</p>
-        </body>
-    </html>"
-`);
+            expect(responseData).toMatch(/Not Found/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -155,7 +121,7 @@ describe('RouteMatcherMiddleware', () => {
                     'Route error',
                     new ArgumentCallback((context: { name: string; message: string; code: number }) => {
                         expect(context).toEqual({
-                            name: 'NotFoundError',
+                            name: 'Not Found',
                             message:
                                 'The page "/path" you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.',
                             code: 404,
@@ -170,7 +136,7 @@ describe('RouteMatcherMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/NotFoundError/);
+            expect(responseData).toMatch(/Not Found/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
