@@ -77,7 +77,9 @@ describe('ErrorMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/Internal Server Error/);
+            expect(responseData).toMatch(/<title>Internal Server Error<\/title>/);
+            expect(responseData).toMatch(/<div class="text-5xl">Internal Server Error<\/div>/);
+            expect(responseData).toMatch(/500/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -132,7 +134,9 @@ describe('ErrorMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/Internal Server Error/);
+            expect(responseData).toMatch(/<title>Internal Server Error<\/title>/);
+            expect(responseData).toMatch(/<div class="text-5xl">Internal Server Error<\/div>/);
+            expect(responseData).toMatch(/500/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -201,11 +205,14 @@ describe('ErrorMiddleware', () => {
 
                 expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-                expect(responseData).toMatch(/Internal Server Error/);
+                expect(responseData).toMatch(/<title>Internal Server Error<\/title>/);
+                expect(responseData).toMatch(/<div class="text-5xl">Internal Server Error<\/div>/);
+                expect(responseData).toMatch(/500/);
+
+                expect(responseData).toMatch(error.name);
 
                 if (e instanceof Error) {
-                    expect(responseData).toMatch(/Error: example/);
-                    expect(responseData).toMatch(/ErrorMiddleware/);
+                    expect(responseData).toMatch(/<br>&nbsp;&nbsp;&nbsp;&nbsp/);
                 }
 
                 expect(mockByCallsUsed(request)).toBe(true);

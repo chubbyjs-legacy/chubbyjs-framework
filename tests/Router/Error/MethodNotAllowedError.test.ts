@@ -11,5 +11,6 @@ describe('MethodNotAllowedError', () => {
             'Method "POST" at path "/path" is not allowed. Must be one of: "GET", "HEAD".',
         );
         expect(routerError.code).toBe(405);
+        expect(routerError._httpErrorInterface).toBe('MethodNotAllowedError');
     });
 });

@@ -79,7 +79,9 @@ describe('RouteMatcherMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/Not Found/);
+            expect(responseData).toMatch(/<title>Not Found<\/title>/);
+            expect(responseData).toMatch(/<div class="text-5xl">Not Found<\/div>/);
+            expect(responseData).toMatch(/404/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -136,7 +138,9 @@ describe('RouteMatcherMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/Not Found/);
+            expect(responseData).toMatch(/<title>Not Found<\/title>/);
+            expect(responseData).toMatch(/<div class="text-5xl">Not Found<\/div>/);
+            expect(responseData).toMatch(/404/);
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);

@@ -10,5 +10,6 @@ describe('NotFoundError', () => {
             'The page "/path" you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.',
         );
         expect(routerError.code).toBe(404);
+        expect(routerError._httpErrorInterface).toBe('NotFoundError');
     });
 });
