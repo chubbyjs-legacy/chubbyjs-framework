@@ -19,7 +19,8 @@ class ErrorMiddleware implements MiddlewareInterface {
         handler: RequestHandlerInterface,
     ): Promise<ResponseInterface> {
         return new Promise((resolve) => {
-            Promise.resolve(handler.handle(request))
+            handler
+                .handle(request)
                 .then((response) => {
                     resolve(response);
                 })
@@ -58,33 +59,18 @@ class ErrorMiddleware implements MiddlewareInterface {
             return e;
         }
 
-        if (typeof e === 'undefined') {
-            return {
-                name: typeof e,
-                message: '',
-            };
-        }
+        const error = new Error(typeof e === 'object' ? '' + JSON.stringify(e) : `${String(e)}`);
+        error.name = typeof e;
+        error.stack = undefined;
 
-        if (typeof e === 'string' || typeof e === 'symbol' || typeof e === 'function') {
-            return {
-                name: typeof e,
-                message: e.toString(),
-            };
-        }
-
-        return {
-            name: typeof e,
-            message: '' + JSON.stringify(e),
-        };
+        return error;
     }
 
     private addDebugToBody(e: unknown): string {
-        let error: Error | undefined;
-        const errors = [];
+        const errors: Array<Error> = [];
 
         do {
-            error = this.eToError(e);
-            errors.push(error);
+            errors.push(this.eToError(e));
         } while ((e = e && (e as { previous: unknown }).previous));
 
         return errors

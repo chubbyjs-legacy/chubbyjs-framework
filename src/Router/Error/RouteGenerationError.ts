@@ -11,15 +11,11 @@ class RouteGenerationError extends RouterError {
         attributes: Map<string, string> | undefined,
         error?: Error,
     ): RouteGenerationError {
-        let message = `Route generation for route "${name}" with pattern "${pattern}" with attributes "${
-            undefined !== attributes ? JSON.stringify(Object.fromEntries(attributes)) : ''
-        }" failed.`;
-
-        if (error) {
-            message += ` Cause: ${error.message}`;
-        }
-
-        return new RouteGenerationError(message);
+        return new RouteGenerationError(
+            `Route generation for route "${name}" with pattern "${pattern}" with attributes "${
+                undefined !== attributes ? JSON.stringify(Object.fromEntries(attributes)) : ''
+            }" failed.${error ? ` Cause: ${error.message}` : ''}`,
+        );
     }
 }
 

@@ -41,7 +41,14 @@ describe('ErrorMiddleware', () => {
         });
 
         test('without debug, without log', async () => {
-            const error = new Error('example');
+            const previousError = new Error('previous');
+            previousError.stack = 'Error: previous\nat Line1\nat Line2\nat Line3';
+
+            const error = new Error('error');
+            error.stack = 'Error: error\nat Line1\nat Line2';
+
+            // @ts-ignore
+            error.previous = previousError;
 
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
@@ -77,9 +84,127 @@ describe('ErrorMiddleware', () => {
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/<title>Internal Server Error<\/title>/);
-            expect(responseData).toMatch(/<div class="text-5xl">Internal Server Error<\/div>/);
-            expect(responseData).toMatch(/500/);
+            expect(responseData.replace(/\n/g, '').replace(/ {2,}/g, '')).toEqual(
+                `<html>
+                    <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                        <title>Internal Server Error</title>
+                        <style>
+                            html {
+                                font-family: Helvetica, Arial, Verdana, sans-serif;
+                                line-height: 1.5;
+                                tab-size: 4;
+                            }
+
+                            body {
+                                margin: 0;
+                            }
+
+                            * {
+                                border-width: 0;
+                                border-style: solid;
+                            }
+
+                            .container {
+                                width: 100%
+                            }
+
+                            @media (min-width:640px) {
+                                .container {
+                                    max-width: 640px
+                                }
+                            }
+
+                            @media (min-width:768px) {
+                                .container {
+                                    max-width: 768px
+                                }
+                            }
+
+                            @media (min-width:1024px) {
+                                .container {
+                                    max-width: 1024px
+                                }
+                            }
+
+                            @media (min-width:1280px) {
+                                .container {
+                                    max-width: 1280px
+                                }
+                            }
+
+                            @media (min-width:1536px) {
+                                .container {
+                                    max-width: 1536px
+                                }
+                            }
+
+                            .mx-auto {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            .inline-block {
+                                display: inline-block;
+                            }
+
+                            .align-top {
+                                vertical-align: top;
+                            }
+
+                            .mt-3 {
+                                margin-top: .75rem;
+                            }
+
+                            .mt-12 {
+                                margin-top: 3rem;
+                            }
+
+                            .mr-5 {
+                                margin-right: 1.25rem;
+                            }
+
+                            .pr-5 {
+                                padding-right: 1.25rem;
+                            }
+
+                            .text-gray-400 {
+                                --tw-text-opacity: 1;
+                                color: rgba(156, 163, 175, var(--tw-text-opacity));
+                            }
+
+                            .text-5xl {
+                                font-size: 3rem;
+                                line-height: 1;
+                            }
+
+                            .tracking-tighter {
+                                letter-spacing: -.05em;
+                            }
+
+                            .border-gray-400 {
+                                --tw-border-opacity: 1;
+                                border-color: rgba(156, 163, 175, var(--tw-border-opacity));
+                            }
+
+                            .border-r-2 {
+                                border-right-width: 2px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container mx-auto tracking-tighter mt-12">
+                            <div class="inline-block align-top text-gray-400 border-r-2 border-gray-400 pr-5 mr-5 text-5xl">500</div>
+                            <div class="inline-block align-top">
+                                <div class="text-5xl">Internal Server Error</div>
+                                <div class="mt-3">The requested page failed to load, please try again later.</div>
+                            </div>
+                        </div>
+                    </body>
+                </html>`
+                    .replace(/\n/g, '')
+                    .replace(/ {2,}/g, ''),
+            );
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -88,8 +213,15 @@ describe('ErrorMiddleware', () => {
             expect(mockByCallsUsed(responseFactory)).toBe(true);
         });
 
-        test('without debug, with log', async () => {
-            const error = new Error('example');
+        test('with debug, with log', async () => {
+            const previousError = new Error('previous');
+            previousError.stack = 'Error: previous\nat Line1\nat Line2\nat Line3';
+
+            const error = new Error('error');
+            error.stack = 'Error: error\nat Line1\nat Line2';
+
+            // @ts-ignore
+            error.previous = previousError;
 
             const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
@@ -130,13 +262,144 @@ describe('ErrorMiddleware', () => {
                 ),
             ]);
 
-            const middleware = new ErrorMiddleware(responseFactory, false, logger);
+            const middleware = new ErrorMiddleware(responseFactory, true, logger);
 
             expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-            expect(responseData).toMatch(/<title>Internal Server Error<\/title>/);
-            expect(responseData).toMatch(/<div class="text-5xl">Internal Server Error<\/div>/);
-            expect(responseData).toMatch(/500/);
+            expect(responseData.replace(/\n/g, '').replace(/ {2,}/g, '')).toEqual(
+                `<html>
+                    <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                        <title>Internal Server Error</title>
+                        <style>
+                            html {
+                                font-family: Helvetica, Arial, Verdana, sans-serif;
+                                line-height: 1.5;
+                                tab-size: 4;
+                            }
+
+                            body {
+                                margin: 0;
+                            }
+
+                            * {
+                                border-width: 0;
+                                border-style: solid;
+                            }
+
+                            .container {
+                                width: 100%
+                            }
+
+                            @media (min-width:640px) {
+                                .container {
+                                    max-width: 640px
+                                }
+                            }
+
+                            @media (min-width:768px) {
+                                .container {
+                                    max-width: 768px
+                                }
+                            }
+
+                            @media (min-width:1024px) {
+                                .container {
+                                    max-width: 1024px
+                                }
+                            }
+
+                            @media (min-width:1280px) {
+                                .container {
+                                    max-width: 1280px
+                                }
+                            }
+
+                            @media (min-width:1536px) {
+                                .container {
+                                    max-width: 1536px
+                                }
+                            }
+
+                            .mx-auto {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            .inline-block {
+                                display: inline-block;
+                            }
+
+                            .align-top {
+                                vertical-align: top;
+                            }
+
+                            .mt-3 {
+                                margin-top: .75rem;
+                            }
+
+                            .mt-12 {
+                                margin-top: 3rem;
+                            }
+
+                            .mr-5 {
+                                margin-right: 1.25rem;
+                            }
+
+                            .pr-5 {
+                                padding-right: 1.25rem;
+                            }
+
+                            .text-gray-400 {
+                                --tw-text-opacity: 1;
+                                color: rgba(156, 163, 175, var(--tw-text-opacity));
+                            }
+
+                            .text-5xl {
+                                font-size: 3rem;
+                                line-height: 1;
+                            }
+
+                            .tracking-tighter {
+                                letter-spacing: -.05em;
+                            }
+
+                            .border-gray-400 {
+                                --tw-border-opacity: 1;
+                                border-color: rgba(156, 163, 175, var(--tw-border-opacity));
+                            }
+
+                            .border-r-2 {
+                                border-right-width: 2px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container mx-auto tracking-tighter mt-12">
+                            <div class="inline-block align-top text-gray-400 border-r-2 border-gray-400 pr-5 mr-5 text-5xl">500</div>
+                            <div class="inline-block align-top">
+                                <div class="text-5xl">Internal Server Error</div>
+                                <div class="mt-3">
+                                    The requested page failed to load, please try again later.
+                                    <div class="mt-3">
+                                        Error: error
+                                        <br>&nbsp;&nbsp;&nbsp;&nbsp;at Line1
+                                        <br>&nbsp;&nbsp;&nbsp;&nbsp;at Line2
+                                    </div>
+                                    <div class="mt-3">
+                                        Error: previous
+                                        <br>&nbsp;&nbsp;&nbsp;&nbsp;at Line1
+                                        <br>&nbsp;&nbsp;&nbsp;&nbsp;at Line2
+                                        <br>&nbsp;&nbsp;&nbsp;&nbsp;at Line3
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                </html>`
+                    .replace(/\n/g, '')
+                    .replace(/ {2,}/g, ''),
+            );
 
             expect(mockByCallsUsed(request)).toBe(true);
             expect(mockByCallsUsed(responseGetBody)).toBe(true);
@@ -148,7 +411,7 @@ describe('ErrorMiddleware', () => {
 
         [
             { e: new Error('example'), error: { name: 'Error', message: 'example' } },
-            { e: undefined, error: { name: 'undefined', message: '' } },
+            { e: undefined, error: { name: 'undefined', message: 'undefined' } },
             { e: null, error: { name: 'object', message: 'null' } },
             { e: true, error: { name: 'boolean', message: 'true' } },
             { e: false, error: { name: 'boolean', message: 'false' } },
@@ -160,7 +423,7 @@ describe('ErrorMiddleware', () => {
             { e: { key: 'value' }, error: { name: 'object', message: '{"key":"value"}' } },
             { e: new Array('example'), error: { name: 'object', message: '["example"]' } },
         ].forEach(({ e, error }) => {
-            test('with debug, with log (' + error.name + ')', async () => {
+            test('with debug, with log (' + JSON.stringify(e) + ')', async () => {
                 const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
 
                 let responseData = '';
@@ -205,14 +468,11 @@ describe('ErrorMiddleware', () => {
 
                 expect(await middleware.process(request, handler)).toBe(responseGetBody);
 
-                expect(responseData).toMatch(/<title>Internal Server Error<\/title>/);
-                expect(responseData).toMatch(/<div class="text-5xl">Internal Server Error<\/div>/);
-                expect(responseData).toMatch(/500/);
-
                 expect(responseData).toMatch(error.name);
+                expect(responseData).toMatch(error.message);
 
                 if (e instanceof Error) {
-                    expect(responseData).toMatch(/<br>&nbsp;&nbsp;&nbsp;&nbsp/);
+                    expect(responseData).toMatch(/<br>&nbsp;&nbsp;&nbsp;&nbsp;at /);
                 }
 
                 expect(mockByCallsUsed(request)).toBe(true);

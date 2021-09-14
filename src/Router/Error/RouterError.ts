@@ -1,12 +1,9 @@
-abstract class RouterError implements Error {
-    public name: string;
-    public message: string;
+abstract class RouterError extends Error {
     public code: number;
-    public stack?: string;
 
     protected constructor(name: string, message: string, code: number) {
+        super(message);
         this.name = name;
-        this.message = message;
         this.code = code;
     }
 }
