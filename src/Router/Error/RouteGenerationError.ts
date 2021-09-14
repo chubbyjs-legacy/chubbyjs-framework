@@ -14,7 +14,7 @@ class RouteGenerationError extends RouterError {
         return new RouteGenerationError(
             `Route generation for route "${name}" with pattern "${pattern}" with attributes "${
                 undefined !== attributes ? JSON.stringify(Object.fromEntries(attributes)) : ''
-            }" failed.${error ? ` Cause: ${error.message}` : ''}`,
+            }" failed.${error ? ' Cause: ' + error.message : ''}`,
         );
     }
 }
