@@ -30,9 +30,7 @@ class ErrorMiddleware implements MiddlewareInterface {
         });
     }
 
-    private handleError(e: unknown): ResponseInterface {
-        const error = this.eToError(e);
-
+    private handleError(error: unknown): ResponseInterface {
         this.logger.error('Error', { error });
 
         const response = this.responseFactory.createResponse(500).withHeader('Content-Type', 'text/html');
