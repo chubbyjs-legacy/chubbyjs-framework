@@ -18,16 +18,11 @@ class ErrorMiddleware implements MiddlewareInterface {
         request: ServerRequestInterface,
         handler: RequestHandlerInterface,
     ): Promise<ResponseInterface> {
-        return new Promise((resolve) => {
-            handler
-                .handle(request)
-                .then((response) => {
-                    resolve(response);
-                })
-                .catch((error) => {
-                    resolve(this.handleError(error));
-                });
-        });
+        try {
+            return await handler.handle(request);
+        } catch (error) {
+            return this.handleError(error);
+        }
     }
 
     private handleError(error: unknown): ResponseInterface {
