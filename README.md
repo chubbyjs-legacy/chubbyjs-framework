@@ -31,12 +31,27 @@ A minimal, highly [performant][2] middleware [PSR-15][3] microframework built wi
  * [@chubbyjs/psr-http-server-middleware][8]: ^1.1.1
  * [@chubbyjs/psr-log][9]: ^1.0.3
 
+## Suggest
+
+### Http-Message
+
+ * [@chubbyjs/chubbyjs-http-message][10]: ^1.1.1
+
+### Router
+
+ * [@chubbyjs/chubbyjs-framework-router-path-to-regexp][11]: ^1.0.1
+
+### Server
+
+ * [@chubbyjs/chubbyjs-node-psr-http-message-bridge][12]: ^1.2.3
+ * [@chubbyjs/chubbyjs-uwebsockets-psr-http-message-bridge][13]: ^1.1.1
+
 ## Installation
 
 Through [NPM](https://www.npmjs.com) as [@chubbyjs/chubbyjs-framework][1].
 
 ```sh
-npm i @chubbyjs/chubbyjs-framework@1.1.8 \
+npm i @chubbyjs/chubbyjs-framework@1.1.9 \
     @chubbyjs/chubbyjs-framework-router-path-to-regexp@1.0.1 \
     @chubbyjs/chubbyjs-http-message@1.1.1
 ```
@@ -173,3 +188,7 @@ Dominik Zogg 2021
 [7]: https://www.npmjs.com/package/@chubbyjs/psr-http-server-handler
 [8]: https://www.npmjs.com/package/@chubbyjs/psr-http-server-middleware
 [9]: https://www.npmjs.com/package/@chubbyjs/psr-log
+[10]: https://www.npmjs.com/package/@chubbyjs/chubbyjs-http-message
+[11]: https://www.npmjs.com/package/@chubbyjs/chubbyjs-framework-router-path-to-regexp
+[12]: https://www.npmjs.com/package/@chubbyjs/chubbyjs-node-psr-http-message-bridge
+[13]: https://www.npmjs.com/package/@chubbyjs/chubbyjs-uwebsockets-psr-http-message-bridge
