@@ -162,7 +162,7 @@ const uwebsocketResponseEmitter = new UwebsocketResponseEmitter();
 
 require('uWebSockets.js')
     .App()
-    .any('/*', (res: HttpResponse, req: HttpRequest) => {
+    .any('/*', async (res: HttpResponse, req: HttpRequest) => {
         const serverRequest = psrRequestFactory.create(req, res);
         const response = await app.handle(serverRequest);
 
