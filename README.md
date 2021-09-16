@@ -38,11 +38,12 @@ Through [NPM](https://www.npmjs.com) as [@chubbyjs/chubbyjs-framework][1].
 ```sh
 npm i @chubbyjs/chubbyjs-framework@1.1.8 \
     @chubbyjs/chubbyjs-framework-router-path-to-regexp@1.0.1 \
-    @chubbyjs/chubbyjs-http-message@1.1.1 \
-    @chubbyjs/chubbyjs-node-psr-http-message-bridge@1.2.1
+    @chubbyjs/chubbyjs-http-message@1.1.1
 ```
 
 ## Usage
+
+### App
 
 ```ts
 import PathToRegexpRouteMatcher from '@chubbyjs/chubbyjs-framework-router-path-to-regexp/dist/PathToRegexpRouteMatcher';
@@ -53,14 +54,8 @@ import CallbackRequestHandler from '@chubbyjs/chubbyjs-framework/dist/RequestHan
 import Route from '@chubbyjs/chubbyjs-framework/dist/Router/Route';
 import Routes from '@chubbyjs/chubbyjs-framework/dist/Router/Routes';
 import ResponseFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/ResponseFactory';
-import ServerRequestFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/ServerRequestFactory';
-import StreamFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/StreamFactory';
-import UriFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/UriFactory';
-import NodeResponseEmitter from '@chubbyjs/chubbyjs-node-psr-http-message-bridge/dist/NodeResponseEmitter';
-import PsrRequestFactory from '@chubbyjs/chubbyjs-node-psr-http-message-bridge/dist/PsrRequestFactory';
 import ResponseInterface from '@chubbyjs/psr-http-message/dist/ResponseInterface';
 import ServerRequestInterface from '@chubbyjs/psr-http-message/dist/ServerRequestInterface';
-import { createServer, IncomingMessage, ServerResponse } from 'http';
 
 const responseFactory = new ResponseFactory();
 
@@ -86,6 +81,26 @@ const app = new Application([
         responseFactory,
     ),
 ]);
+```
+
+### Server
+
+#### Node
+
+```sh
+npm i @chubbyjs/chubbyjs-node-psr-http-message-bridge@1.2.3
+```
+
+```ts
+import Application from '@chubbyjs/chubbyjs-framework/dist/Application';
+import ServerRequestFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/ServerRequestFactory';
+import StreamFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/StreamFactory';
+import UriFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/UriFactory';
+import NodeResponseEmitter from '@chubbyjs/chubbyjs-node-psr-http-message-bridge/dist/NodeResponseEmitter';
+import PsrRequestFactory from '@chubbyjs/chubbyjs-node-psr-http-message-bridge/dist/PsrRequestFactory';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
+
+const app = new Application([...]);
 
 const psrRequestFactory = new PsrRequestFactory(
     new ServerRequestFactory(),
@@ -102,7 +117,47 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
     nodeResponseEmitter.emit(response, res);
 });
 
-server.listen(8080);
+server.listen(8080, '0.0.0.0');
+```
+
+#### uWebSockets.js
+
+```sh
+npm i @chubbyjs/chubbyjs-uwebsockets-psr-http-message-bridge@1.1.1
+```
+
+```ts
+import Application from '@chubbyjs/chubbyjs-framework/dist/Application';
+import ServerRequestFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/ServerRequestFactory';
+import StreamFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/StreamFactory';
+import UriFactory from '@chubbyjs/chubbyjs-http-message/dist/Factory/UriFactory';
+import PsrRequestFactory from '@chubbyjs/chubbyjs-uwebsockets-psr-http-message-bridge/dist/PsrRequestFactory';
+import UwebsocketResponseEmitter from '@chubbyjs/chubbyjs-uwebsockets-psr-http-message-bridge/dist/UwebsocketResponseEmitter';
+import { HttpRequest, HttpResponse } from 'uWebSockets.js';
+
+const app = new Application([...]);
+
+const psrRequestFactory = new PsrRequestFactory(
+    new ServerRequestFactory(),
+    new UriFactory(),
+    new StreamFactory(),
+);
+
+const uwebsocketResponseEmitter = new UwebsocketResponseEmitter();
+
+require('uWebSockets.js')
+    .App()
+    .any('/*', (res: HttpResponse, req: HttpRequest) => {
+        const serverRequest = psrRequestFactory.create(req, res);
+        const response = await app.handle(serverRequest);
+
+        uwebsocketResponseEmitter.emit(response, res);
+    })
+    .listen('0.0.0.0', 8080, (listenSocket: unknown) => {
+        if (listenSocket) {
+            console.log('Listening to port 0.0.0.0:8080');
+        }
+    });
 ```
 
 ## Copyright
