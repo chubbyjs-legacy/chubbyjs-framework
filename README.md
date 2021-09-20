@@ -77,22 +77,16 @@ const responseFactory = new ResponseFactory();
 const app = new Application([
     new ErrorMiddleware(responseFactory, true),
     new RouteMatcherMiddleware(
-        new PathToRegexpRouteMatcher(
-            new Routes([
-                Route.get(
-                    '/hello/:name([a-z]+)',
-                    'hello',
-                    new CallbackRequestHandler(
-                        async (request: ServerRequestInterface): Promise<ResponseInterface> => {
-                            const response = responseFactory.createResponse(200);
-                            response.getBody().end(`Hello, ${request.getAttribute('name')}`);
+        new PathToRegexpRouteMatcher(new Routes([
+            Route.get('/hello/:name([a-z]+)', 'hello', new CallbackRequestHandler(
+                async (request: ServerRequestInterface): Promise<ResponseInterface> => {
+                    const response = responseFactory.createResponse(200);
+                    response.getBody().end(`Hello, ${request.getAttribute('name')}`);
 
-                            return response;
-                        },
-                    ),
-                ),
-            ]),
-        ),
+                    return response;
+                },
+            )),
+        ])),
         responseFactory,
     ),
 ]);
