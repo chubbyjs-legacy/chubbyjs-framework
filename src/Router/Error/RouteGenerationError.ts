@@ -7,12 +7,12 @@ class RouteGenerationError extends RouterError {
 
     public static create(
         name: string,
-        pattern: string,
+        path: string,
         attributes: Map<string, string> | undefined,
         error?: Error,
     ): RouteGenerationError {
         return new RouteGenerationError(
-            `Route generation for route "${name}" with pattern "${pattern}" with attributes "${
+            `Route generation for route "${name}" with path "${path}" with attributes "${
                 undefined !== attributes ? JSON.stringify(Object.fromEntries(attributes)) : ''
             }" failed.${error ? ' Cause: ' + error.message : ''}`,
         );
