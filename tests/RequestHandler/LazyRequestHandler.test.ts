@@ -37,4 +37,28 @@ describe('LazyRequestHandler', () => {
         expect(mockByCallsUsed(handler)).toBe(true);
         expect(mockByCallsUsed(container)).toBe(true);
     });
+
+    test('process async', async () => {
+        const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
+        const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
+
+        const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble, [
+            Call.create('handle')
+                .with(request)
+                .willReturnCallback(async () => response),
+        ]);
+
+        const container = mockByCalls.create<ContainerInterface>(ContainerDouble, [
+            Call.create('get').with('id').willReturn(Promise.resolve(handler)),
+        ]);
+
+        const lazyRequestHandler = new LazyRequestHandler(container, 'id');
+
+        expect(await lazyRequestHandler.handle(request)).toBe(response);
+
+        expect(mockByCallsUsed(request)).toBe(true);
+        expect(mockByCallsUsed(response)).toBe(true);
+        expect(mockByCallsUsed(handler)).toBe(true);
+        expect(mockByCallsUsed(container)).toBe(true);
+    });
 });

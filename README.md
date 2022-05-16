@@ -51,7 +51,7 @@ A minimal, highly [performant][2] middleware [PSR-15][3] microframework built wi
 Through [NPM](https://www.npmjs.com) as [@chubbyjs/chubbyjs-framework][1].
 
 ```sh
-npm i @chubbyjs/chubbyjs-framework@1.1.9 \
+npm i @chubbyjs/chubbyjs-framework@1.2.0 \
     @chubbyjs/chubbyjs-framework-router-path-to-regexp@1.0.1 \
     @chubbyjs/chubbyjs-http-message@1.1.1
 ```

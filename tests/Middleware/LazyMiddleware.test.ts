@@ -42,4 +42,31 @@ describe('LazyMiddleware', () => {
         expect(mockByCallsUsed(middleware)).toBe(true);
         expect(mockByCallsUsed(container)).toBe(true);
     });
+
+    test('process async', async () => {
+        const request = mockByCalls.create<ServerRequestInterface>(ServerRequestDouble);
+        const response = mockByCalls.create<ResponseInterface>(ResponseDouble);
+
+        const handler = mockByCalls.create<RequestHandlerInterface>(RequestHandlerDouble);
+
+        const middleware = mockByCalls.create<MiddlewareInterface>(MiddlewareDouble, [
+            Call.create('process')
+                .with(request, handler)
+                .willReturnCallback(async () => response),
+        ]);
+
+        const container = mockByCalls.create<ContainerInterface>(ContainerDouble, [
+            Call.create('get').with('id').willReturn(Promise.resolve(middleware)),
+        ]);
+
+        const lazyMiddleware = new LazyMiddleware(container, 'id');
+
+        expect(await lazyMiddleware.process(request, handler)).toBe(response);
+
+        expect(mockByCallsUsed(request)).toBe(true);
+        expect(mockByCallsUsed(response)).toBe(true);
+        expect(mockByCallsUsed(handler)).toBe(true);
+        expect(mockByCallsUsed(middleware)).toBe(true);
+        expect(mockByCallsUsed(container)).toBe(true);
+    });
 });

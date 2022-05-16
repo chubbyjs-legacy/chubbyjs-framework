@@ -11,7 +11,7 @@ class LazyMiddleware implements MiddlewareInterface {
         request: ServerRequestInterface,
         handler: RequestHandlerInterface,
     ): Promise<ResponseInterface> {
-        return this.container.get<MiddlewareInterface>(this.id).process(request, handler);
+        return (await this.container.get<Promise<MiddlewareInterface>>(this.id)).process(request, handler);
     }
 }
 

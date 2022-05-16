@@ -7,7 +7,7 @@ class LazyRequestHandler implements RequestHandlerInterface {
     public constructor(private container: ContainerInterface, private id: string) {}
 
     public async handle(request: ServerRequestInterface): Promise<ResponseInterface> {
-        return this.container.get<RequestHandlerInterface>(this.id).handle(request);
+        return (await this.container.get<Promise<RequestHandlerInterface>>(this.id)).handle(request);
     }
 }
 
